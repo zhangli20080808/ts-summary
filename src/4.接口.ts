@@ -49,7 +49,7 @@ type Name = {
 interface User extends Name {
   age: number;
 }
-let user: User = { name: 'zl', age: 10 };
+let user: User = { name: "zl", age: 10, sex: "f" };
 
 /* ===============  type 与 interface 交叉 =================*/
 interface Name3 {
@@ -57,7 +57,7 @@ interface Name3 {
 }
 type User3 = Name & {
   age: number;
-}
+};
 
 /* ===============  描述函数 =================*/
 interface IFullName {
@@ -92,8 +92,8 @@ interface IVeg {
 
 // 1. 如果定义的值比接口中的多 可以采用类型断言 直接断言成对应的接口
 const tomato: IVeg = {
-  taste: 'great',
-  color: 'red',
+  taste: "great",
+  color: "red",
   size: 10,
 } as IVeg;
 
@@ -108,8 +108,8 @@ interface ITest extends IVeg {
 }
 
 const tomato2: ITest = {
-  taste: 'great',
-  color: 'red',
+  taste: "great",
+  color: "red",
   size: 10,
 };
 
@@ -118,7 +118,7 @@ interface IArr {
   [key: number]: any;
 }
 
-let arr: IArr = [1, {}, '33'];
+let arr: IArr = [1, {}, "33"];
 
 // 接口可以被类实现
 interface SpeakAble {
@@ -140,7 +140,7 @@ interface SpeakB {
 
 class Speak implements SpeakAble, SpeakB {
   sayChinese(): void {
-    throw new Error('Method not implemented.');
+    throw new Error("Method not implemented.");
   }
 
   // 不加 ! 会报错
@@ -149,7 +149,7 @@ class Speak implements SpeakAble, SpeakB {
   name!: string;
 
   say(): void {
-    throw new Error('Method not implemented.');
+    throw new Error("Method not implemented.");
   }
 }
 
@@ -159,7 +159,7 @@ abstract class Animal {
   abstract name: string; // 可以没有实现
   // 没有标记成 abstract 可以去实现  但是抽象属性必须在子类中实现
   eat() {
-    console.log('eating');
+    console.log("eating");
   }
 }
 
@@ -189,55 +189,52 @@ const setPersonName = (person: Teacher, name: string): void => {
   person.name = name;
 };
 const person = {
-  name: 'zl',
-  sex: 'male',
+  name: "zl",
+  sex: "male",
   say() {
-    return 'hello';
+    return "hello";
   },
   teach() {
-    return 'teach';
+    return "teach";
   },
 };
 getPersonName(person); // 不报错
-setPersonName(person, 'zl'); // 不报错
+setPersonName(person, "zl"); // 不报错
 // getPersonName({name: 'zl', sex: '123'}) // 报错 -> 当传入字面量的时候，TS会进行强校验，此处多传了
 // 但是如果以一个缓存变量的形式传入，就没有这么严格了，只要有就行，多余的属性没有关系
-
-
 
 // 不同点
 // type 可以声明基本类型别名，联合类型，元组等类型
 // 基本类型别名
-type Name4 = string
+type Name4 = string;
 
 // 联合类型
 interface Dog {
-    // wong();
+  // wong();
 }
 interface Cat {
-    // miao();
+  // miao();
 }
 
-type Pet = Dog | Cat
+type Pet = Dog | Cat;
 
 // 具体定义数组每个位置的类型
-type PetList = [Dog, Pet]
+type PetList = [Dog, Pet];
 
 // type 语句中还可以使用 typeof 获取实例的 类型进行赋值
 
 // 当你想获取一个变量的类型时，使用 typeof
-let div = document.createElement('div');
-type B = typeof div
-
+let div = document.createElement("div");
+type B = typeof div;
 
 // interface 可以而 type 不行 -能够声明合并
 interface User {
-  name: string
-  age: number
+  name: string;
+  age: number;
 }
 
 interface User {
-  sex: string
+  sex: string;
 }
 
 /*

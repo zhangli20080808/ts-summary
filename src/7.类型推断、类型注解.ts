@@ -5,16 +5,14 @@
  * 2. 函数默认会进行推断 函数会根据右边的类型 推到左边的类型 不用标注sum类型
  * 3. 返回值的推断
  * 4. 属性判断
- *
- * 类型注解
- * let count: number -> 这种显示的声名count变量是一个number类型数据的写法，成为类型注解
- * 我们来告诉ts 变量是什么类型
+ 
  */
 
 const sum = (a: string, b: string): string => {
   return a + b; // return {a,b}
 };
-
+// 类型注解 - 这种显示的声名count变量是一个number类型数据的写法，称为类型注解，我们来告诉ts 变量是什么类型
+let count: number 
 //  属性推断
 let school = {
   name: 'zhangLi',

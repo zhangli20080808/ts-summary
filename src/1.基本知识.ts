@@ -151,15 +151,18 @@ let s2 = Symbol('zl');
 
 console.log(s1 === s2); // false
 
-// BigInt
+// BigInt - 对最大安全数字再进行操作，可能会不准确, 有溢出的现象
 // let num1 = Number.MAX_SAFE_INTEGER + 1;
-let num1 = BigInt(Number.MAX_SAFE_INTEGER) + BigInt(1);
 // let num2 = Number.MAX_SAFE_INTEGER + 2;
-let num2 = BigInt(Number.MAX_SAFE_INTEGER) + BigInt(2);
-console.log(num1 === num2); // true 包装之后 false
+// console.log(num1 === num2); // true 
+
+let num3 = BigInt(Number.MAX_SAFE_INTEGER) + BigInt(1);
+let num4 = BigInt(Number.MAX_SAFE_INTEGER) + BigInt(2);
+console.log(num3 === num4); // false 包装之后 false
 
 /** ======== 类型的问题  1. 类型推断 2. 类型问题  =======
  number和Number的区别？ 
+ 大小写的区别 string - String  前者的string只是后者String类型的一个表现
 **/
 
 // 11..toString()  11.0.toString
