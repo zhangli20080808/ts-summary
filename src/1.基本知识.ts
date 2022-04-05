@@ -10,18 +10,18 @@
 
 /** ====================================  对象类型 对象 数组 函数  =========================**/
 // 元组 标识长度和个数都 (内容存放类型) 限制好了
-let tuple: [string, number, boolean] = ['zl', 123, true];
+let tuple: [string, number, boolean] = ["zl", 123, true];
 // 可以向元组中添加内容，不能通过索引添加属性 只能通过方法
 // 只能放入元组中已经声明过的类型,此处push对象 会报错
-tuple.push('name');
+tuple.push("name");
 
 /**
  * 使用场景 比如csv 文件格式的转化
  */
 const testList: [string, string, number][] = [
-  ['zk', 'male', 20],
-  ['zl', 'female', 21],
-  ['zc', 'male', 20],
+  ["zk", "male", 20],
+  ["zl", "female", 21],
+  ["zc", "male", 20],
 ];
 
 // 对象类型
@@ -29,7 +29,7 @@ const teacher: {
   name: string;
   age: number;
 } = {
-  name: 'zl',
+  name: "zl",
   age: 18,
 };
 
@@ -42,14 +42,14 @@ create([]);
 create(function () {});
 
 // 如果不在自己定义的模块内 声名name会报错 因为全局下已经声名了name
-let name = '1';
+let name = "1";
 
 // 数组 存放一类类型的集合
 let arr1: number[] = [1, 2, 3];
 let arr2: undefined[] = [undefined, undefined];
 type User = { name: string; age: number };
 
-let objectArr: User[] = [{ name: '123', age: 10 }];
+let objectArr: User[] = [{ name: "123", age: 10 }];
 
 // 其他的case，比如 JSON.parse()并不会帮我们自动去推断
 interface Name {
@@ -62,44 +62,25 @@ const newData: Name = JSON.parse(rowData);
 /* ================         联合类型              ================*/
 // 联合类型可以看做并集 既能使用字符串 也能使用数字 当没有初始化的时候，只能调用两者中公有的方法
 // 联合类型最主要的使用场景还是 条件类型 部分
-let arr3: (string | number)[] = [1, 2, 3, '4'];
-let arr4: Array<string | number> = [1, 2, 3, '4'];
+let arr3: (string | number)[] = [1, 2, 3, "4"];
+let arr4: Array<string | number> = [1, 2, 3, "4"];
 
-let ele: HTMLElement | null = document.getElementById('id');
-ele!.style.color = 'red'; // ! 非空断言，一定有值 ts语法只能存在ts中
+let ele: HTMLElement | null = document.getElementById("id");
+ele!.style.color = "red"; // ! 非空断言，一定有值 ts语法只能存在ts中
 // ele?.style.color = 'red'; // ele&&ele.style
 
+// 把值当做类型的时候，值就和类型相同
+type Increase = Boolean | 1 | 0;
+function mounted(isStartUp: Increase): void {
+  if (isStartUp) {
+    console.log("yes");
+  } else {
+    console.log("no");
+  }
+}
+mounted(0);
 // 类型断言 不能断言不存在的属性
-(ele as HTMLElement).style.color = 'green';
-
-// 类型别名 type
-// 以往
-export const STATUS = {
-  //   na: 'xxx',
-  //   nb: 'bbb',
-};
-
-/** ====================================  枚举类型  =========================**/
-enum USER_ROLE {
-  USER = 0, // 默认下标是从0开始
-  ADMIN,
-  MANAGE,
-}
-
-// 默认可以正向取出，也可以反举  传入一个对象，往对象中不停的赋值
-// console.log(USER_ROLE[0]); // USER
-// console.log(USER_ROLE['USER']); // 0
-
-// 异构枚举 可以在枚举中放不同的类型 可以通过数字向下推断
-// 常量枚举 默认只是提供了一个类型
-
-const enum USER_ROLES {
-  USER,
-  ADMIN,
-}
-
-console.log(USER_ROLES.ADMIN);
-
+(ele as HTMLElement).style.color = "green";
 /** ====================================  undefined | null   =========================**/
 
 // any类型 不进行类型检测 相当于没有写类型
@@ -127,15 +108,16 @@ v = undefined;
 // str2 = n;
 
 function MyError(): never {
-  throw new Error('xxx');
+  throw new Error("xxx");
 }
 function whileTue(): never {
   while (true) {}
 }
+// 使用never避免出现未来拓展新的类没有对用类型的实现，目的就是写出绝对安全的代码
 function byType(val: string | number) {
-  if (typeof val === 'string') {
+  if (typeof val === "string") {
     // val.replace();
-  } else if (typeof val === 'number') {
+  } else if (typeof val === "number") {
     // val.toFixed;
   } else {
     // 取不到类型或值得时候 都是never 比如参数类型 val 没有 boolean的时候
@@ -146,15 +128,15 @@ function byType(val: string | number) {
 let n = MyError(); // n->never
 
 // Symbol BigInt Symbol表示独一无二 比如做一些常量 或者一些私有属性 都可以使用Symbol
-let s1 = Symbol('zl');
-let s2 = Symbol('zl');
+let s1 = Symbol("zl");
+let s2 = Symbol("zl");
 
 console.log(s1 === s2); // false
 
 // BigInt - 对最大安全数字再进行操作，可能会不准确, 有溢出的现象
 // let num1 = Number.MAX_SAFE_INTEGER + 1;
 // let num2 = Number.MAX_SAFE_INTEGER + 2;
-// console.log(num1 === num2); // true 
+// console.log(num1 === num2); // true
 
 let num3 = BigInt(Number.MAX_SAFE_INTEGER) + BigInt(1);
 let num4 = BigInt(Number.MAX_SAFE_INTEGER) + BigInt(2);
@@ -196,15 +178,90 @@ let number5: Number = new Number(11);
 4.x版本的一些新特性
 1. const 为何也能被修改？ 如何解决
  */
-const arrList = [1, 2, 3, 'zhangLi'];
+const arrList = [1, 2, 3, "zhangLi"];
 arrList[0] = 4;
 
 // 通过  as const 对数组种每一个元素做了一个只读限制，导致无法修改
-const arrList2 = [1, 2, 3, 'zhangLi'] as const;
+const arrList2 = [1, 2, 3, "zhangLi"] as const;
 // arrList2[0] = 4  //报错 无法分配到 "数组的索引为0的位置的元素" ，因为它是只读属性。ts(2540)
 
 function showArr(arr: readonly any[]) {
   // readonly 不允许修改
   console.log(arr);
 }
-showArr(arrList2); 
+// 取值问题
+let obj: object = { username: "zl", age: 18 };
+const username = "username";
+let results = (obj as any)[username];
+showArr(arrList2);
+
+/** ====================================  枚举类型  =========================**/
+// 普通常量
+// const STATUS= {
+
+// }
+// 定义- 用来存放一组固定的常量的序列
+// 枚举分类
+// 字符串枚举
+enum EnumAuditStatus {
+  MANAGE_ADUIT_FAIL = "项目经理审核失败",
+  NO_ADUIT = "没有审核",
+  FINAL_ADUIT_SUCCESS = "财务审核通过",
+}
+enum WeekEnd {
+  MONDAY = "Monday",
+  TUESDAY = "Tuesday",
+}
+// 数字枚举
+enum USER_ROLE {
+  USER = 0, // 默认下标是从0开始
+  ADMIN, // 第二个常量值自动递增1 就为1
+  MANAGE, // 第二个常量值自动递增2 就为2
+  FINAL, // 第二个常量值自动递增3 就为3
+}
+
+// 默认可以正向取出，也可以反举  传入一个对象，往对象中不停的赋值
+console.log(USER_ROLE[0]); // USER
+console.log(USER_ROLE["USER"]); // 0
+
+console.log(EnumAuditStatus.MANAGE_ADUIT_FAIL); //项目经理审核失败
+console.log(EnumAuditStatus["MANAGE_ADUIT_FAIL"]); //MANAGE_ADUIT_FAIL
+
+// 异构枚举 可以在枚举中放不同的类型 可以通过数字向下推断
+// 常量枚举 默认只是提供了一个类型
+
+const enum USER_ROLES {
+  USER,
+  ADMIN,
+}
+// 应用 好处 1. 有默认值和自增值，节省了编码时间  2. 语义清晰，可读性强
+const UserRole = {
+  USER: -1,
+  ADMIN: 0,
+  MANAGE: 1,
+  FINAL: 2,
+};
+// class CheckUserRole {
+//   getUserRole(role:number){
+//     if(role === UserRole.USER){
+//       console.log('aaaa -1')
+//     }else if(role === UserRole.ADMIN){
+//       console.log('aaaa 0')
+//     }else if(role === UserRole.FINAL){
+//       console.log('aaaa 2')
+//     }
+//   }
+// }
+class CheckUserRole {
+  getUserRole(role: USER_ROLE) {
+    if (role === USER_ROLE.USER) {
+      console.log("aaaa -1");
+    } else if (role === USER_ROLE.ADMIN) {
+      console.log("aaaa 0");
+    } else if (role === USER_ROLE.FINAL) {
+      console.log("aaaa 2");
+    }
+  }
+}
+
+console.log(USER_ROLES.ADMIN);

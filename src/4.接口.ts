@@ -1,5 +1,5 @@
 /**
- * 接口 -> 其实就是在开发过程中，TS帮助我们做语法提示的一个东西
+ * 接口 -> 其实就是在开发过程中，TS帮助我们做语法提示的一个东西。只能定义对象类型或者接口当名字的函数类型
  * 1. 描述对象的属性、形状
  * 2. 根据接口 提供一些新的类型，供别人使用 
 
@@ -9,8 +9,12 @@
    也就是说 interface 可以 extends type, type 也可以 与 interface 类型 交叉
  * 
    不同点 
- * 1. type 可以声明基本类型别名，联合类型，元组等类型
-   2. interface 能够声明合并，type不行
+ * 1. 定义范围不同 - type 可以声明基本类型别名，联合类型，交叉类型，元组等类型，可以定义任何类型
+   2. 接口可以extends一个或者多个接口或类，也可以继承type，但type没有继承功能，
+   3. 用type交叉类型 & 可让类型中的成员合并 
+   4. interface 能够合并声明，type不行。
+      就是说定义两个相同名称的接口会合并声明，定义两个同名的type，会出现编译错误
+
  * 原则： 一般 能用接口就是用接口，不能就换成type， type只是一个别名，接口才是真正的类型
  *
  * interface可以描述 (属性、方法、类)
@@ -60,11 +64,16 @@ type User3 = Name & {
 };
 
 /* ===============  描述函数 =================*/
+// 一种特殊的接口类型 - 接口当名字的函数类型
 interface IFullName {
   // 在接口中不能 ()=>void
-  apple: () => void;
+  // apple: () => void;
   (firstName: string, secondName: string): string;
 }
+let fullName: IFullName = (firstName, secondName): string => {
+  console.log(firstName, secondName);
+  return "123";
+};
 
 /* ===============  描述混合类型  计数器 一个函数返回一个函数 返回的函数有属性 既是函数又是属性 =================*/
 interface ICount {
@@ -244,4 +253,5 @@ User 接口为 {
   sex: string
 }
 */
+
 export {};

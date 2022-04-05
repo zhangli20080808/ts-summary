@@ -29,7 +29,7 @@ type T1 = keyof any; // string | number | symbol
         [P in keyof T]?: T[P]; 
     };
 
-    3. Teacher -> 范型中keyof的使用
+    3. Teacher -> 范型中keyof的使用，具体看demo19
     场景：类中有一个对象，根据index或者key值获取对象中的某一项内容的时候，又想正确的推断出返回内容的类型的时候，可以使用 Teacher 这种模式
     4. in keyof T 和 extends keyof T 的区别
     [P in keyof T] -> 精确匹配  && <T, K extends keyof T> -> 包含了里面的属性值就可以，多了无所谓
