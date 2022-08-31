@@ -25,7 +25,6 @@ class Pointer {
 
 let point = new Pointer(1, 2, 3, 4, 5);
 
-
 /**
  * 类中的修饰符 - 访问类型 (public private  protected  限制了访问空间和访问范围) readonly
  * 1. public 表示父类本身 子类 内外面都可以访问这个属性，调用
@@ -106,20 +105,16 @@ class Person {
   // constructor(name: string) {
   //   this.name = name
   // }
-  constructor(public name: string) {
-  }
+  constructor(public name: string) {}
 }
-class Teacher extends Person{
+class Teacher extends Person {
   constructor(public age: number) {
     // super 如果一个类继承了一个类 如果子类要有一个构造器的话，那么必须要调用父类的super关键字，并把父类要求的参数传递过去
 
-    super('zl')
+    super('zl');
   }
 }
 
 // const person = new Person('zl')
-const teacher = new Teacher(20)
-
-
-
+const teacher = new Teacher(20);
 export {};

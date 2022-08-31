@@ -62,7 +62,6 @@ const sum = <T extends number>(a: T, b: T): T => {
   return (a + b) as T;
 };
 sum(1, 2); // 1和2具备数字的能力，约束T是number类型
-
 // extends 泛型约束 约束泛型的能力, 来收窄类型约束
 // 希望传入的数据 只要是带有length属性就可以 -> 可以使字符串 数组各种把
 // 此处的extends不是继承的意思 是包含、约束的意思 T满足WithLen里面的条件

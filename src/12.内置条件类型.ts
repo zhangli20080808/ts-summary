@@ -15,6 +15,14 @@
    5.1 查看函数返回值类型
  */
 
+/** ==================  类型运算,类型有了，可以做哪些类型运算呢?  =========================**/
+// 条件 -》 extends ？：  简单理解，也就是ts类型系统中的 if else
+type demo = 1 extends 2 ? true : false; // 静态的，没什么意义，ts中一的类型运算都是用来做一些动态的类型运算的
+type isTwo<T> = T extends 2 ? true : false;
+type res = isTwo<1>;
+type res2 = isTwo<2>; // 这种类型 也叫做高级类型
+// 高级类型的特点是，传入类型参数，经过一系列类型运算后，返回新的类型
+
 /** ====================================  泛型约束  =========================**/
 function pickSingleValue<T extends object, U extends keyof T>(
   obj: T,
@@ -245,6 +253,10 @@ type ToIntersection<T> = T extends {
 type T3 = ToIntersection<{ a: (x: T1) => void; b: (x: T2) => void }>; //T1 & T2
 
 /** ====================================  infer，inference -  用于修饰作为类型参数的泛型 =========================**/
+
+// 推导：infer
+// 如何提取类型的一部分，那肯定是infer
+
 // infer R，R表示 待推断的类型
 // 通常 infer不会被直接使用，而是与条件类型一起，被放置在底层工具类型中
 
@@ -259,6 +271,13 @@ type T3 = ToIntersection<{ a: (x: T1) => void; b: (x: T2) => void }>; //T1 & T2
 
 // demo 参数类型位置上
 // type inferType<T> = T extends (params: infer P) => any ? P : T;
+
+// 比如提取元组类型的第一个元素 第一个extends 约束 参数类型只能是数组
+type First<Tuple extends unknown[]> = Tuple extends [infer T, ...infer R]
+  ? T
+  : never;
+
+type res3 = First<[1, 2, 3]>;
 
 interface Customer {
   name: string;
