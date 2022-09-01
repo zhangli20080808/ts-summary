@@ -114,6 +114,7 @@ type GetParameters<Func extends Function> = Func extends (
 ) => unknown
   ? Args
   : never;
+  
 type ParametersResult = GetParameters<(name: string, age: number) => string>;
 
 // 2. 获取函数值的返回类型
