@@ -117,6 +117,7 @@ type GetParameters<Func extends Function> = Func extends (
 type ParametersResult = GetParameters<(name: string, age: number) => string>;
 
 // 2. 获取函数值的返回类型
+
 // 注意：这里参数类型之所以是 any[] 是因为参数类型是要赋值给别的类型的，而unknown只能用来接受类型
 type GetReturnType<Func extends Function> = Func extends (
   ...args: any[]
