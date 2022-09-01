@@ -71,9 +71,56 @@ type StartWidthRes = StartWidth<'guanAndGong', 'guan'>; // true
 // 生命要替换的Str，待替换的字符串From,替换成的字符串
 type ReplaceStr<
   Str extends string,
-  Form extends string,
+  From extends string,
   To extends string
-> = Str extends `${infer Prefix}${Form}${infer Suffix}`
+> = Str extends `${infer Prefix}${From}${infer Suffix}`
   ? `${Prefix}${To}${Suffix}`
   : Str;
-type ReplaceStrResult = ReplaceStr<'gandongis best friend is ?', '?', 'zhangLi'>;
+type ReplaceStrResult = ReplaceStr<
+  'gandongis best friend is ?',
+  '?',
+  'zhangLi'
+>;
+
+// 3. trim
+// 不知道有多少空白字符，所以需要一个一个去匹配，递归
+// 类型参数 Str 是需要trim的字符串
+// 如果 Str 匹配字符串 + 空白字符 (空格、换行、制表符)，那就把字符串放到 infer 声明的局部变量 Rest 里
+// 把 Rest 作为类型参数递归 TrimRight，直到不匹配，这时的类型参数 Str 就是处理结果。
+
+type TrimRight<Str extends string> = Str extends `${infer Rest}${
+  | ' '
+  | '\n'
+  | '\t'}`
+  ? TrimRight<Rest>
+  : Str;
+type TrimRes1 = TrimRight<'abcdefg    '>;
+type TrimLeft<Str extends string> = Str extends `${
+  | ' '
+  | '\n'
+  | '\t'}${infer Rest}`
+  ? TrimLeft<Rest>
+  : Str;
+type TrimRes2 = TrimRight<'       abcdefg '>;
+type Trim<Str extends string> = TrimRight<TrimLeft<Str>>;
+type TrimRes3 = Trim<' agdsgsdgdsg '>;
+
+// 函数 - 也可以做类型匹配，比如参数返回值的类型
+// 1. GetParameters - 提取函数参数的类型
+// 类型参数Func是要匹配的函数类型，通过extends来约束为 Function
+// 参数类型放到 infer 声明的局部变量 Args中
+type GetParameters<Func extends Function> = Func extends (
+  ...args: infer Args
+) => unknown
+  ? Args
+  : never;
+type ParametersResult = GetParameters<(name: string, age: number) => string>;
+
+// 2. 获取函数值的返回类型
+// 注意：这里参数类型之所以是 any[] 是因为参数类型是要赋值给别的类型的，而unknown只能用来接受类型
+type GetReturnType<Func extends Function> = Func extends (
+  ...args: any[]
+) => infer ReturnType
+  ? ReturnType
+  : never;
+type ReturnTypeResult = GetReturnType<() => string>;

@@ -8,6 +8,7 @@ function Person(name, age) {
 }
 let person = new Person('zhangLi', 20);
 console.log(person, typeof person); // object 
+console.log(person.__proto__ === Person.constructor) // true
 
 // new 一个实例对象的底3步
 // 1. 创建一个obj对象  let obj = new Object()
