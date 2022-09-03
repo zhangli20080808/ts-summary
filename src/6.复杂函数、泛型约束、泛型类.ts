@@ -12,10 +12,10 @@ function createArray<T>(times: number, val: T): Array<T> {
 }
 
 // 使用方式 2种 复杂场景可能需要手动传入
-let res = createArray<string>(3, "abc"); // 不传入会自动推到
+let res = createArray<string>(3, 'abc'); // 不传入会自动推到
 
 // 类型推断
-let res2 = createArray(3, "111");
+let res2 = createArray(3, '111');
 
 /** =======================  范型对一些类型的声名，如何使用范型具体作为一个类型注解 =========================**/
 // 泛型变量 可以使我们的T当做一部分使用 而不是整个类型的使用 灵活
@@ -55,7 +55,7 @@ interface IArr<B> {
 const swap2 = <B>(tuple: IArr<B>): IArr<B> => {
   return [tuple[0], tuple[1]];
 };
-let r1 = swap2([0, "1"]); //  IArr<string | number>
+let r1 = swap2([0, '1']); //  IArr<string | number>
 
 // 函数求和
 const sum = <T extends number>(a: T, b: T): T => {
@@ -71,7 +71,7 @@ function getType<T extends WithLen>(obj: T) {
   obj.length;
 }
 
-getType("1");
+getType('1');
 
 // 默认泛型 不传递 默认给与类型
 interface DStr<T = string> {
@@ -81,7 +81,7 @@ interface DStr<T = string> {
 type T1 = DStr;
 type T2 = DStr<number>;
 type T3 = DStr<boolean>;
-let str1: T1 = { name: "123" };
+let str1: T1 = { name: '123' };
 let str2: T2 = { name: 123 };
 let str3: T3 = { name: true };
 
@@ -93,7 +93,7 @@ let str3: T3 = { name: true };
 const getVal = <T extends Object, K extends keyof T>(obj: T, key: K) => {
   return obj[key];
 };
-getVal({ a: 1, b: 2 }, "a");
+getVal({ a: 1, b: 2 }, 'a');
 
 type t1 = keyof any; // string | number | symbol
 type t2 = keyof (string | number); // "toString" | "valueOf"
@@ -123,4 +123,28 @@ function create<T>(c: { new (): T }): T {
 
 // /** ==========  综合demo  TS范型接口 + TS范型类 + 范型约束 + 多态     =========================**/
 
+// 复杂函数
+// 1. 有属性的函数类型定义方法
+interface FunctionWithAttribute {
+  attr: string;
+  (str: string): void; // 注意此处的定义 不能是 ()=>void
+}
+const test: FunctionWithAttribute = (str: string) => {
+  console.log(str);
+};
+test.attr = 'attribute';
+// 2. 构造函数的类型如何定义
+interface ClassWidthConstructor {
+  new (str: string): void;
+}
+const testOne = (outerClass: ClassWidthConstructor) => {
+  return new outerClass('new');
+};
+class TestOne {
+  name: string;
+  constructor(str: string) {
+    this.name = str;
+  }
+}
+testOne(TestOne);
 export {};
