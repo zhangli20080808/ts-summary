@@ -1,36 +1,100 @@
+// 装饰器  拓展属性和方法 或者重写 装饰器就是函数 函数返回函数 执行完成之后还是函数
+// 使用装饰器的目的 语法糖 为了使用简单
+// 范围 只能装饰类 不能装饰函数(以为函数会变量提升)
+
+//
+function aaa(target: any) {
+  console.log('2');
+}
+
+function xxx(target: any) {
+  console.log(1);
+  // 修饰类本身当前参数就是类 一个参数
+  target.prototype.say = function () {
+    console.log('say');
+  };
+}
+
 /**
- * 
- * @param target 普通方法，target 对应的是类的 prototype
+ *
+ * @param target 原型
+ * @param key 属性
+ */
+function toUpperCase(target: any, key: string) {
+  console.log(target, key);
+  let value = target[key];
+  Object.defineProperty(target, key, {
+    get() {
+      return value.toUpperCase();
+    },
+    set(newVal) {
+      value = newVal;
+    },
+  });
+}
+function double(num: number) {
+  return function (target: any, key: string) {
+    //修饰静态属性 target 类
+    let value = target[key];
+    Object.defineProperty(target, key, {
+      get() {
+        return value * num;
+      },
+    });
+  };
+}
+
+/**
+ * 将 getName 转换为可枚举属性
+   @param target 普通方法，target 对应的是类的 prototype
    静态方法，target对应的是 类的构造函数
  * @param key - 装饰的方法名 
  * @param descriptor - 可以对方法做很多拓展 
-
+  // configurable: true enumerable: true value: ƒ () writable: true
+ * @param description Object.defineProperty 的第三个参数  configurable enumerable  value
  */
-function getNameDecorator(
-  target: any,
-  key: string,
-  descriptor: PropertyDescriptor //对函数方法做修饰，比如不能修改等
-) {
-  // console.log(target,key);
-  descriptor.writable = true // 不能重写该方法
-  // value 属性或者方法原始的值，才考 defineProperty 属性
-  descriptor.value = function(){
-    return '装饰之后的返回值'
-  }
-  
+function toEnum(target: any, key: string, description: PropertyDescriptor) {
+  console.log(target, key, description);
+  // configurable: true enumerable: true value: ƒ () writable: true
+  description.enumerable = false;
 }
-// @decorator1
-class Test {
-  name: string;
-  constructor(name: string) {
-    this.name = name;
-  }
-  @getNameDecorator
-  getName() {
-    return this.name;
-  }
+
+// function namePrivateDecorator(
+//   target: any,
+//   key: any,
+//   description: PropertyDescriptor
+// ) {
+//   description.writable = false;
+// }
+
+@aaa
+@xxx
+class Person {
+  say!: Function;
+  // 比如初始化的时候装饰属性
+  @toUpperCase
+  name: string = ' zhangLi'; // 直接默认走set
+  // private _name = 'private_name';
+  @double(3)
+  static age: number = 10; // 修改类静态属性时 不会走set方法
+
+  @toEnum
+  getName() {}
+
+  // 访问器的装饰器
+  // get namePrivate() {
+  //   return this._name;
+  // }
+  // @namePrivateDecorator set get 访问器加一个就ok
+  // set namePrivate(str: string) {
+  //   this._name = str;
+  // }
 }
-const test = new Test('zl');
-(test as any).getName();
-console.log(test.getName());
+
+let person = new Person();
+// 需要在类中生命 say方法 不然会报错
+// person.say();
+console.log(person.name); // ZHANGLI
+console.log(Person.age); // 30
+
 export {};

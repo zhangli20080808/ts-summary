@@ -46,8 +46,10 @@ function double(num: number) {
 
 /**
  * 将 getName 转换为可枚举属性
- * @param target
- * @param key
+   @param target 普通方法，target 对应的是类的 prototype
+   静态方法，target对应的是 类的构造函数
+ * @param key - 装饰的方法名 
+ * @param descriptor - 可以对方法做很多拓展 
   // configurable: true enumerable: true value: ƒ () writable: true
  * @param description Object.defineProperty 的第三个参数  configurable enumerable  value
  */
@@ -56,6 +58,7 @@ function toEnum(target: any, key: string, description: PropertyDescriptor) {
   // configurable: true enumerable: true value: ƒ () writable: true
   description.enumerable = false;
 }
+
 
 @aaa
 @xxx
