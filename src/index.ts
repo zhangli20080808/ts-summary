@@ -1,40 +1,36 @@
 /**
-类的装饰器
-如果是修饰类的装饰器，接受的参数应该是类的构造函数
-使用方式 - 通过@符号使用
-执行时 - 当类创建好之后就回去执行,不是每次实例化的时候去执行
-多个装饰器 执行 -》从下向上执行 装饰器，先收集的装饰器后执行
+ * 
+ * @param target 普通方法，target 对应的是类的 prototype
+   静态方法，target对应的是 类的构造函数
+ * @param key - 装饰的方法名 
+ * @param descriptor - 可以对方法做很多拓展 
+
  */
-
-/**
- * 拿到类的构造函数，新增原型方法  say
- * @param constructor 装饰器的参数 -》类的构造器
- * @param flag 可以根据条件判断返回装饰器类型
- */
-
-function testDecorator() {
-  return function <T extends new (...args: any[]) => any>(constructor: T) {
-    return class extends constructor {
-      name = '456';
-      getName() {
-        return this.name;
-      }
-    };
-  };
-}
-
-// Test 已经是装饰器装饰之后的类了，所以我们可以点出getName方法
-const Test = testDecorator()(
-  class Test {
-    name: string;
-    constructor(name: string) {
-      console.log(1);
-      this.name = name;
-      console.log(2);
-    }
+function getNameDecorator(
+  target: any,
+  key: string,
+  descriptor: PropertyDescriptor //对函数方法做修饰，比如不能修改等
+) {
+  // console.log(target,key);
+  descriptor.writable = true // 不能重写该方法
+  // value 属性或者方法原始的值，才考 defineProperty 属性
+  descriptor.value = function(){
+    return '装饰之后的返回值'
   }
-);
-
-const test = new Test('123');
+  
+}
+// @decorator1
+class Test {
+  name: string;
+  constructor(name: string) {
+    this.name = name;
+  }
+  @getNameDecorator
+  getName() {
+    return this.name;
+  }
+}
+const test = new Test('zl');
+(test as any).getName();
 console.log(test.getName());
 export {};
