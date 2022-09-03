@@ -147,4 +147,11 @@ class TestOne {
   }
 }
 testOne(TestOne);
+// Date类型 - 构造函数调用  函数调用
+interface DateType {
+  new (): Date;
+  (dataString: string): string;
+}
+// 函数泛型
+// 函数重载
 export {};

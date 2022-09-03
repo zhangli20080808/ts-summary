@@ -1,79 +1,37 @@
-// 装饰器  拓展属性和方法 或者重写 装饰器就是函数 函数返回函数 执行完成之后还是函数
-// 使用装饰器的目的 语法糖 为了使用简单
-// 范围 只能装饰类 不能装饰函数(以为函数会变量提升)
-
-function aaa(target: any) {
-  console.log('2');
-}
-
-function xxx(target: any) {
-  console.log(1);
-  // 修饰类本身当前参数就是类 一个参数
-  target.prototype.say = function () {
-    console.log('say');
-  };
-}
+/**
+类的装饰器
+如果是修饰类的装饰器，接受的参数应该是类的构造函数
+使用方式 - 通过@符号使用
+执行时 - 当类创建好之后就回去执行,不是每次实例化的时候去执行
+多个装饰器 执行 -》从下向上执行 装饰器，先收集的装饰器后执行
+ */
 
 /**
- *
- * @param target 原型
- * @param key 属性
+ * 拿到类的构造函数，新增原型方法  say
+ * @param constructor 装饰器的参数 -》类的构造器
+ * @param flag 可以根据条件判断返回装饰器类型
  */
-function toUpperCase(target: any, key: string) {
-  console.log(target, key);
-  let value = target[key];
-  Object.defineProperty(target, key, {
-    get() {
-      return value.toUpperCase();
-    },
-    set(newVal) {
-      value = newVal;
-    },
-  });
+function testDecorator(flag: boolean) {
+  console.log('decorator');
+  // constructor.prototype.say = function () {
+  //   console.log('say');
+  // };
+  if (flag) {
+    return function (constructor: any) {
+      constructor.prototype.say = function () {
+        console.log('say');
+      };
+    };
+  }
+  return function (constructor: any) {};
 }
-function double(num: number) {
-  return function (target: any, key: string) {
-    //修饰静态属性 target 类
-    let value = target[key];
-    Object.defineProperty(target, key, {
-      get() {
-        return value * num;
-      },
-    });
-  };
-}
+// function decorator1(target: any) {
+//   console.log('decorator1');
+// }
 
-/**
- * 将 getName 转换为可枚举属性
- * @param target
- * @param key
-  // configurable: true enumerable: true value: ƒ () writable: true
- * @param description Object.defineProperty 的第三个参数  configurable enumerable  value
- */
-function toEnum(target: any, key: string, description: PropertyDescriptor) {
-  console.log(target, key, description);
-  // configurable: true enumerable: true value: ƒ () writable: true
-  description.enumerable = false;
-}
-
-// @aaa
-// @xxx
-class Person {
-  say!: Function;
-  // 比如初始化的时候装饰属性
-  // @toUpperCase
-  name: string = ' zhangLi'; // 直接默认走set
-  // @double(3)
-  // static age: number = 10; // 修改类静态属性时 不会走set方法
-
-  // @toEnum
-  // getName() {}
-}
-
-let person = new Person();
-// 需要在类中生命 say方法 不然会报错
-// person.say();
-console.log(person.name); // ZHANGLI
-console.log(Person.age); // 30
-
+@testDecorator(true)
+// @decorator1
+class Test {}
+const test = new Test();
+(test as any).say()
 export {};
