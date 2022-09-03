@@ -11,27 +11,30 @@
  * @param constructor 装饰器的参数 -》类的构造器
  * @param flag 可以根据条件判断返回装饰器类型
  */
-function testDecorator(flag: boolean) {
-  console.log('decorator');
-  // constructor.prototype.say = function () {
-  //   console.log('say');
-  // };
-  if (flag) {
-    return function (constructor: any) {
-      constructor.prototype.say = function () {
-        console.log('say');
-      };
-    };
-  }
-  return function (constructor: any) {};
-}
-// function decorator1(target: any) {
-//   console.log('decorator1');
-// }
 
-@testDecorator(true)
-// @decorator1
-class Test {}
-const test = new Test();
-(test as any).say()
+function testDecorator() {
+  return function <T extends new (...args: any[]) => any>(constructor: T) {
+    return class extends constructor {
+      name = '456';
+      getName() {
+        return this.name;
+      }
+    };
+  };
+}
+
+// Test 已经是装饰器装饰之后的类了，所以我们可以点出getName方法
+const Test = testDecorator()(
+  class Test {
+    name: string;
+    constructor(name: string) {
+      console.log(1);
+      this.name = name;
+      console.log(2);
+    }
+  }
+);
+
+const test = new Test('123');
+console.log(test.getName());
 export {};
