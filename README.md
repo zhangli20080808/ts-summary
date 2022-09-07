@@ -24,9 +24,9 @@ Ts 自动更新，自动保存，自动打包，模板
 7. 安装 nodemon yarn add nodemon -D
 8. 在 package.json 中配置自动检测，自动重启应用程序
 
-* nodemon --watch src/ 检测src目录
-* -e ts 表示nodemon命令准备将要监听的是ts后缀的文件
-* --exec ts-node ./src/index.ts 表示检测到src目录下有任何变化，都要重新执行index.ts文件
+- nodemon --watch src/ 检测 src 目录
+- -e ts 表示 nodemon 命令准备将要监听的是 ts 后缀的文件
+- --exec ts-node ./src/index.ts 表示检测到 src 目录下有任何变化，都要重新执行 index.ts 文件
 
 ```js
   "scripts": {
@@ -34,5 +34,7 @@ Ts 自动更新，自动保存，自动打包，模板
   }
 ```
 
-9.Parcel打包支持浏览器运行的ts文件,并配置启动脚本
-  安装 yarn add parcel-bundler -D
+9.Parcel 打包支持浏览器运行的 ts 文件,并配置启动脚本
+安装 yarn add parcel-bundler -D
+
+10. https://www.yuque.com/u262589/kb/hg5x05
