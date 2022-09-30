@@ -50,15 +50,29 @@ sum3(1, 2, 3, 4);
 // '123' -> ['1','2','3']
 // 主要是ts中的 和js没啥关系 比如需要根据参数的不同 限制他的功能 中间不能包含其他语句
 // 我们希望 value是number的时候返回number数组 是string的时候返回string数组
-function toArray(value: string): string[];
-function toArray(value: number): number[];
-function toArray(value: number | string) {
+// function toArray(value: string): string[];
+// function toArray(value: number): number[];
+// function toArray(value: number | string) {
+//   if (typeof value === 'string') {
+//     return value.split('');
+//   } else {
+//     return value
+//       .toString()
+//       .split('')
+//       .map((item) => parseInt(item));
+//   }
+// }
+
+type NameLabel = { name: string };
+type IdLabel = { id: number };
+// 可以 条件对上述的代码进行简化
+type ToArrayRes<T> = T extends number ? IdLabel : NameLabel;
+function toArray<T extends string | number>(value: T): ToArrayRes<T>;
+function toArray(value: number | string): NameLabel | IdLabel {
   if (typeof value === 'string') {
-    return value.split('');
-  } else {
-    return value
-      .toString()
-      .split('')
-      .map((item) => parseInt(item));
+    return {
+      name: 'zl',
+    };
   }
+  return { id: 100 };
 }

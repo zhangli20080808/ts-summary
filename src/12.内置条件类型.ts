@@ -19,11 +19,12 @@
 // 条件 -》 extends ？：  简单理解，也就是ts类型系统中的 if else
 type demo = 1 extends 2 ? true : false; // 静态的，没什么意义，ts中一的类型运算都是用来做一些动态的类型运算的
 type isTwo<T> = T extends 2 ? true : false;
-type res = isTwo<1>;
-type res2 = isTwo<2>; // 这种类型 也叫做高级类型
-// 高级类型的特点是，传入类型参数，经过一系列类型运算后，返回新的类型
+type res = isTwo<1>; // false
+type res2 = isTwo<2>; // true 这种类型 也叫做高级类型
 
+// 高级类型的特点是，传入类型参数，经过一系列类型运算后，返回新的类型
 /** ====================================  泛型约束  =========================**/
+// 获取对象中的某个key中
 function pickSingleValue<T extends object, U extends keyof T>(
   obj: T,
   key: U
@@ -52,16 +53,17 @@ function pickSingleValue<T extends object, U extends keyof T>(
    * 没有被 [] 额外包装的联合类型参数，在条件类型进行判定时会将联合类型分发，分别进行判断
    */
 // naked type 裸类型 单纯是T -> 条件类型会在实例化时期自动分发到联合类型上
-type Naked<T> = T extends boolean ? 'Y' : 'N';
+type Naked<T> = T extends boolean ? 'Y' : 'N'; 
 type Wrapped<T> = [T] extends [boolean] ? 'Y' : 'N';
-
+// type A = Wrapped<false> // 不分发 -》'Y'
+// type B = Wrapped<string> // 不分发 -》'N'
 /** 
   分发两次 'N'|'Y'
   Distributed 类型别名，参数类型 string| boolean 会正确的分发，先分发到  Naked<string> | Naked<boolean>，在进行判断
-  Wrapped 不会进行分发，因为被包裹了 所以直接进行判断  [number | boolean]  extends [boolean]  -> 'N'
+  NotDistributed 不会进行分发，因为被包裹了 所以直接进行判断  [number | boolean]  extends [boolean]  -> 'N'
    */
-type Distributed = Naked<string | boolean>;
-type NotDistributed = Wrapped<number | boolean>;
+type Distributed = Naked<string | boolean>; // 'N' | 'Y'
+type NotDistributed = Wrapped<number | boolean>; // 'N'
 
 interface Fish {
   name1: string;
