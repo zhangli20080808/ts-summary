@@ -9,16 +9,22 @@
  * 2. 对象类型  - 把基础类型合并到一起的一种复杂类型 比如 teacher
  */
 
+// 基础类型
+let married: boolean = false;
+let age: number = 123;
+let firstName: string = 'zl';
+
 /** ====================================  对象类型 对象 数组 函数  =========================**/
-// 元组 标识长度和个数都 (内容存放类型) 限制好了
+
+// 元组 - 表示 长度和个数都 (内容存放类型) 都限制好了
 let tuple: [string, number, boolean] = ['zl', 123, true];
-// 可以向元组中添加内容，不能通过索引添加属性 只能通过方法
+// 可以向元组中添加内容，不能通过索引添加属性，只能通过方法
 // 只能放入元组中已经声明过的类型,此处push对象 会报错
 tuple.push('name');
 
 // 类型的修饰
 type tuple2 = [string, number?];
-
+let tupleL: tuple2 = ['1'];
 /**
  * 使用场景 比如csv 文件格式的转化
  */
@@ -49,10 +55,12 @@ create(function () {});
 let name = '1';
 
 // 数组 存放一类类型的集合
+
 let arr1: number[] = [1, 2, 3];
 let arr2: undefined[] = [undefined, undefined];
-type User = { name: string; age: number };
+let arr33: (number | string)[] = [1, 2, '3'];
 
+type User = { name: string; age: number };
 let objectArr: User[] = [{ name: '123', age: 10 }];
 
 // 其他的case，比如 JSON.parse()并不会帮我们自动去推断
@@ -64,7 +72,7 @@ const rowData = '{"name":"zl"}';
 const newData: Name = JSON.parse(rowData);
 
 /* ================         联合类型              ================*/
-// 联合类型可以看做并集 既能使用字符串 也能使用数字 当没有初始化的时候，只能调用两者中公有的方法
+// 联合类型可以看做并集，既能使用字符串，也能使用数字。当没有初始化的时候，只能调用两者中公有的方法
 // 联合类型最主要的使用场景还是 条件类型 部分
 let arr3: (string | number)[] = [1, 2, 3, '4'];
 let arr4: Array<string | number> = [1, 2, 3, '4'];
@@ -86,14 +94,17 @@ mounted(0);
 // 类型断言 不能断言不存在的属性
 (ele as HTMLElement).style.color = 'green';
 /** ====================================  undefined | null   =========================**/
-
-// any类型 不进行类型检测 相当于没有写类型
 // null undefined 任何类型的子类型
-// 在严格模式下 只能将null赋值给null undefined 赋予给 undefined
+// 在严格模式空检查模式下 - strictNullChecks：true，不能将null，undefined赋值给num ，
+// 只能将null赋值给null undefined 赋予给 undefined
+let num: number;
+num = 123;
+num = undefined;
+num = null;
+
 let str2: number | string | undefined;
 str2 = undefined; // 不能将类型“undefined”分配给类型“string | number”
 let u: undefined = undefined;
-
 // void 只能接受 null 和 undefined  一般用于 函数的返回值
 // 函数默认的返回值是 undefined 默认在严格模式下，不能讲null赋给void
 let v: void;
@@ -200,10 +211,12 @@ let results = (obj as any)[username];
 showArr(arrList2);
 
 /** ====================================  枚举类型  =========================**/
-// 普通常量
-// const STATUS= {
-
-// }
+// 枚举类型 - 简答理解，就是一个个列出来
+// 普通常量标识
+const STATUS= {
+  nf: 'xxx',
+  na: '401'
+}
 // 定义- 用来存放一组固定的常量的序列
 // 枚举分类
 // 字符串枚举
@@ -216,6 +229,8 @@ enum WeekEnd {
   MONDAY = 'Monday',
   TUESDAY = 'Tuesday',
 }
+
+
 // 数字枚举
 enum USER_ROLE {
   USER = 0, // 默认下标是从0开始
@@ -223,10 +238,15 @@ enum USER_ROLE {
   MANAGE, // 第二个常量值自动递增2 就为2
   FINAL, // 第二个常量值自动递增3 就为3
 }
-
 // 默认可以正向取出，也可以反举  传入一个对象，往对象中不停的赋值
 console.log(USER_ROLE[0]); // USER
 console.log(USER_ROLE['USER']); // 0
+
+
+
+
+
+
 
 console.log(EnumAuditStatus.MANAGE_ADUIT_FAIL); //项目经理审核失败
 console.log(EnumAuditStatus['MANAGE_ADUIT_FAIL']); //MANAGE_ADUIT_FAIL
@@ -295,4 +315,27 @@ const testB = startFn('#123'); // 正确
 // any 是任意类型，任何类型都可以赋值给它，它也可以赋值给任何类型（除了 never）。
 // unknown 是未知类型，任何类型都可以赋值给它，但是它不可以赋值给别的类型。
 
+const magicFunction = (params: any) => {
+  console.log(Math.round(params)); // number
+  console.log(params.charAt(0)); // string
+  console.log(params.push(1)); // array
+};
+const magicFunction1 = (params: unknown) => {
+  console.log(Math.round(params)); // number
+  console.log(params.charAt(0)); // string
+  console.log(params.push(1)); // array
+};
+// 如果要对unknown进行操作，必须使用类型断言或者缩小到特定的类型
+const magicFunction2 = (params: unknown) => {
+  if (typeof params === 'number') {
+    console.log(Math.round(params));
+  } else if (typeof params === 'string') {
+    console.log(params.charAt(0));
+  } else if (Array.isArray(params)) {
+    params.push(1);
+  }
+  throw Error('error');
+};
 
+
+export {}

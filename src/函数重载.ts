@@ -63,9 +63,9 @@ sum3(1, 2, 3, 4);
 //   }
 // }
 
+// 使用条件类型可以让函数重载的语法更简练
 type NameLabel = { name: string };
 type IdLabel = { id: number };
-// 可以 条件对上述的代码进行简化
 type ToArrayRes<T> = T extends number ? IdLabel : NameLabel;
 function toArray<T extends string | number>(value: T): ToArrayRes<T>;
 function toArray(value: number | string): NameLabel | IdLabel {
@@ -76,3 +76,4 @@ function toArray(value: number | string): NameLabel | IdLabel {
   }
   return { id: 100 };
 }
+
