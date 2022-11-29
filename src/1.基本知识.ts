@@ -211,26 +211,26 @@ let results = (obj as any)[username];
 showArr(arrList2);
 
 /** ====================================  枚举类型  =========================**/
+
+// 为什么使用枚举？ - 解决多次 if/switch 判断中值的语义化问题
+// 1. 常量解决 2. 常量解决带来的局限性
+
+
+// 定义- 用来存放一组固定的常量的序列
+// 枚举分类
+// 字符串枚举
+
+enum WeekEnd {
+  MONDAY = 'Monday',
+  TUESDAY = 'Tuesday',
+}
+
 // 枚举类型 - 简答理解，就是一个个列出来
 // 普通常量标识
 const STATUS= {
   nf: 'xxx',
   na: '401'
 }
-// 定义- 用来存放一组固定的常量的序列
-// 枚举分类
-// 字符串枚举
-enum EnumAuditStatus {
-  MANAGE_ADUIT_FAIL = '项目经理审核失败',
-  NO_ADUIT = '没有审核',
-  FINAL_ADUIT_SUCCESS = '财务审核通过',
-}
-enum WeekEnd {
-  MONDAY = 'Monday',
-  TUESDAY = 'Tuesday',
-}
-
-
 // 数字枚举
 enum USER_ROLE {
   USER = 0, // 默认下标是从0开始
@@ -238,18 +238,27 @@ enum USER_ROLE {
   MANAGE, // 第二个常量值自动递增2 就为2
   FINAL, // 第二个常量值自动递增3 就为3
 }
-// 默认可以正向取出，也可以反举  传入一个对象，往对象中不停的赋值
+// 默认可以正向取出，也可以反举(字符串不可以，数字可以)
 console.log(USER_ROLE[0]); // USER
 console.log(USER_ROLE['USER']); // 0
+// 异构枚举，可以在枚举中放不同的类型 可以通过数字向下推断
+
+// 常量枚举 默认只是提供了一个类型
+const enum USER_ROLES {
+  USER,
+  ADMIN,
+}
+console.log(USER_ROLES.ADMIN);
 
 
 
-
-
-
-
-console.log(EnumAuditStatus.MANAGE_ADUIT_FAIL); //项目经理审核失败
-console.log(EnumAuditStatus['MANAGE_ADUIT_FAIL']); //MANAGE_ADUIT_FAIL
+enum EnumAuditStatus {
+  MANAGE_ADUIT_FAIL = 'PD审核失败',
+  NO_ADUIT = '没有审核',
+  FINAL_ADUIT_SUCCESS = 'CW审核通过',
+}
+console.log(EnumAuditStatus.MANAGE_ADUIT_FAIL); // PD审核失败
+console.log(EnumAuditStatus['MANAGE_ADUIT_FAIL']); // PD审核失败
 
 enum Transpiler {
   Babel = 'babel',
@@ -258,17 +267,13 @@ enum Transpiler {
   Prettier = 'prettier',
   TypeScriptCompiler = 'tsc',
 }
-
 const transpiler = Transpiler.TypeScriptCompiler;
 
 // 异构枚举 可以在枚举中放不同的类型 可以通过数字向下推断
-// 常量枚举 默认只是提供了一个类型
 
-const enum USER_ROLES {
-  USER,
-  ADMIN,
-}
-// 应用 好处 1. 有默认值和自增值，节省了编码时间  2. 语义清晰，可读性强
+// 枚举的应用 
+// 枚举的好处 1. 有默认值和自增值，节省了编码时间  2. 语义清晰，可读性强
+// 1. 常量解决 2. 常量解决带来的局限性（方法参数不能定义为具体的类型，只能初级使用number，string）基本类型代替，降低了代码的可读性可维护性
 const UserRole = {
   USER: -1,
   ADMIN: 0,
@@ -276,7 +281,7 @@ const UserRole = {
   FINAL: 2,
 };
 // class CheckUserRole {
-//   getUserRole(role:number){
+//   getUserRole(role:number){ // 此处的number范围太广，不能只管的表示role的意思
 //     if(role === UserRole.USER){
 //       console.log('aaaa -1')
 //     }else if(role === UserRole.ADMIN){
@@ -298,7 +303,6 @@ class CheckUserRole {
   }
 }
 
-console.log(USER_ROLES.ADMIN);
 
 // TS还支持 字面量类型，也就是类似 111 ,'aaaa', {a:1} 这种值也可以作为类型
 

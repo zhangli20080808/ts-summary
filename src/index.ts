@@ -1,13 +1,9 @@
-enum USER_ROLE {
-  USER = 0, // 默认下标是从0开始
-  ADMIN, // 第二个常量值自动递增1 就为1
-  MANAGE, // 第二个常量值自动递增2 就为2
-  FINAL, // 第二个常量值自动递增3 就为3
+enum EnumAuditStatus {
+  MANAGE_ADUIT_FAIL = 'PD审核失败',
+  NO_ADUIT = '没有审核',
+  FINAL_ADUIT_SUCCESS = 'CW审核通过',
 }
-console.log(USER_ROLE[0]); // USER
-console.log(USER_ROLE['USER']); // 0
-
-
-
+console.log(EnumAuditStatus.MANAGE_ADUIT_FAIL); //PD审核失败
+console.log(EnumAuditStatus['MANAGE_ADUIT_FAIL']); //MANAGE_ADUIT_FAIL
 
 export {}; // 在当前文件搜索
