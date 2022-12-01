@@ -215,42 +215,46 @@ showArr(arrList2);
 // 为什么使用枚举？ - 解决多次 if/switch 判断中值的语义化问题
 // 1. 常量解决 2. 常量解决带来的局限性
 
-
 // 定义- 用来存放一组固定的常量的序列
 // 枚举分类
-// 字符串枚举
 
+// 字符串枚举
 enum WeekEnd {
-  MONDAY = 'Monday',
-  TUESDAY = 'Tuesday',
+  Monday = 'Monday',
+  Tuesday = 'Tuesday',
+  Wednesday = 'Wednesday',
+  Thursday = 'Thursday',
+  Friday = 'Friday',
+  Saturday = 'Saturday',
+  Sunday = 'Sunday',
 }
+console.log(WeekEnd.Monday); 
+console.log(WeekEnd['Monday']); 
 
 // 枚举类型 - 简答理解，就是一个个列出来
 // 普通常量标识
-const STATUS= {
+const STATUS = {
   nf: 'xxx',
-  na: '401'
-}
+  na: '401',
+};
 // 数字枚举
-enum USER_ROLE {
-  USER = 0, // 默认下标是从0开始
-  ADMIN, // 第二个常量值自动递增1 就为1
-  MANAGE, // 第二个常量值自动递增2 就为2
-  FINAL, // 第二个常量值自动递增3 就为3
-}
-// 默认可以正向取出，也可以反举(字符串不可以，数字可以)
-console.log(USER_ROLE[0]); // USER
-console.log(USER_ROLE['USER']); // 0
-// 异构枚举，可以在枚举中放不同的类型 可以通过数字向下推断
+// enum USER_ROLE {
+//   USER = 0, // 默认下标是从0开始
+//   ADMIN, // 第二个常量值自动递增1 就为1
+//   MANAGE, // 第二个常量值自动递增2 就为2
+//   FINAL, // 第二个常量值自动递增3 就为3
+// }
+// // 默认可以正向取出，也可以反举(字符串不可以，数字可以)
+// console.log(USER_ROLE[0]); // USER
+// console.log(USER_ROLE['USER']); // 0
+// // 异构枚举，可以在枚举中放不同的类型 可以通过数字向下推断
 
-// 常量枚举 默认只是提供了一个类型
-const enum USER_ROLES {
-  USER,
-  ADMIN,
-}
-console.log(USER_ROLES.ADMIN);
-
-
+// // 常量枚举 默认只是提供了一个类型
+// const enum USER_ROLES {
+//   USER,
+//   ADMIN,
+// }
+// console.log(USER_ROLES.ADMIN);
 
 enum EnumAuditStatus {
   MANAGE_ADUIT_FAIL = 'PD审核失败',
@@ -260,6 +264,7 @@ enum EnumAuditStatus {
 console.log(EnumAuditStatus.MANAGE_ADUIT_FAIL); // PD审核失败
 console.log(EnumAuditStatus['MANAGE_ADUIT_FAIL']); // PD审核失败
 
+// 字符串枚举
 enum Transpiler {
   Babel = 'babel',
   Postcss = 'postcss',
@@ -271,27 +276,40 @@ const transpiler = Transpiler.TypeScriptCompiler;
 
 // 异构枚举 可以在枚举中放不同的类型 可以通过数字向下推断
 
-// 枚举的应用 
-// 枚举的好处 1. 有默认值和自增值，节省了编码时间  2. 语义清晰，可读性强
+// 枚举的应用
+// 枚举的好处 1. 有默认值和自增值，节省了编码时间  2. 语义清晰，可读性强(直观)
 // 1. 常量解决 2. 常量解决带来的局限性（方法参数不能定义为具体的类型，只能初级使用number，string）基本类型代替，降低了代码的可读性可维护性
+// 枚举的定义 -
 const UserRole = {
   USER: -1,
   ADMIN: 0,
   MANAGE: 1,
   FINAL: 2,
 };
-// class CheckUserRole {
-//   getUserRole(role:number){ // 此处的number范围太广，不能只管的表示role的意思
-//     if(role === UserRole.USER){
-//       console.log('aaaa -1')
-//     }else if(role === UserRole.ADMIN){
-//       console.log('aaaa 0')
-//     }else if(role === UserRole.FINAL){
-//       console.log('aaaa 2')
-//     }
-//   }
-// }
 class CheckUserRole {
+  // 此处用常量表示并不完善 此处的number范围太广，不能直观的表示role的意思
+  // 如果 有某种数据类型能够去约束此处变量真实的类型，就更为直观了，考虑项目大了之后
+  getUserRole(role: number) {
+    if (role === UserRole.USER) {
+      console.log('aaaa -1');
+    } else if (role === UserRole.ADMIN) {
+      console.log('aaaa 0');
+    } else if (role === UserRole.FINAL) {
+      console.log('aaaa 2');
+    }
+  }
+}
+// 使用 枚举准备确定 role的类型
+enum USER_ROLE {
+  USER = 0, // 默认下标是从0开始
+  ADMIN, // 第二个常量值自动递增1 就为1
+  MANAGE, // 第二个常量值自动递增2 就为2
+  FINAL, // 第二个常量值自动递增3 就为3
+}
+// 默认可以正向取出，也可以反举(字符串不可以，数字可以)
+console.log(USER_ROLE[0]); // USER
+console.log(USER_ROLE['USER']); // 0
+class CheckUserRoleEnum {
   getUserRole(role: USER_ROLE) {
     if (role === USER_ROLE.USER) {
       console.log('aaaa -1');
@@ -303,6 +321,7 @@ class CheckUserRole {
   }
 }
 
+// 枚举的分类 - 数字枚举
 
 // TS还支持 字面量类型，也就是类似 111 ,'aaaa', {a:1} 这种值也可以作为类型
 
@@ -341,5 +360,4 @@ const magicFunction2 = (params: unknown) => {
   throw Error('error');
 };
 
-
-export {}
+export {};
