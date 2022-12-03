@@ -21,6 +21,7 @@ let tuple: [string, number, boolean] = ['zl', 123, true];
 // 可以向元组中添加内容，不能通过索引添加属性，只能通过方法
 // 只能放入元组中已经声明过的类型,此处push对象 会报错
 tuple.push('name');
+// 补充- 场景
 
 // 类型的修饰
 type tuple2 = [string, number?];
@@ -44,14 +45,17 @@ const teacher: {
 };
 
 // object 除了 number, string, boolean, bigint , symbol, null, or undefined，其他都是 object。
-// 注意： 对象类型，非原始对象类型 object 比如平时传入的参数是对象，类型又想使用object
+// 使用场景： 比如平时传入的参数是对象，类型又想使用object
 const create = (obj: object) => {};
 
+create('123123') // 基本类型
+create(null)
 create({});
 create([]);
 create(function () {});
 
-// 如果不在自己定义的模块内 声名name会报错 因为全局下已经声名了name
+// 注意：如果不在自己定义的模块内 声名name会报错 因为全局下已经声名了name，
+// 解决方式：将当前文件变成模块 export {}
 let name = '1';
 
 // 数组 存放一类类型的集合
@@ -93,10 +97,10 @@ function mounted(isStartUp: Increase): void {
 mounted(0);
 // 类型断言 不能断言不存在的属性
 (ele as HTMLElement).style.color = 'green';
-/** ====================================  undefined | null   =========================**/
+/** ====================================  undefined | null | void  =========================**/
 // null undefined 任何类型的子类型
 // 在严格模式空检查模式下 - strictNullChecks：true，不能将null，undefined赋值给num ，
-// 只能将null赋值给null undefined 赋予给 undefined
+// 在严格模式下，只能将null赋值给null undefined 赋予给 undefined
 let num: number;
 num = 123;
 num = undefined;
@@ -123,32 +127,35 @@ v = undefined;
 // str2 = n;
 
 function MyError(): never {
-  throw new Error('xxx');
+  throw new Error('xxx'); // 1. 错去情况
 }
 function whileTue(): never {
-  while (true) {}
+  while (true) {} // 2. 死循环
 }
+// byType 方法 穷尽了 DataParams 的所有可能类型
 // 使用never避免出现未来拓展新的类没有对用类型的实现，目的就是写出绝对安全的代码
-function byType(val: string | number) {
+type DataParams = string | number
+function byType(val: DataParams) {
   if (typeof val === 'string') {
-    // val.replace();
+    val.replace('a', '');
   } else if (typeof val === 'number') {
-    // val.toFixed;
+    val.toFixed;
   } else {
-    // 取不到类型或值得时候 都是never 比如参数类型 val 没有 boolean的时候
-    val; // never  主要永远完整性和标识出错的情况
+    // 取不到类型或值得时候 都是never， 为未来的某个数据类型预留触控键
+    // 比如参数类型 val 没有 boolean的时候, 此处val是never，如果传入 boolean ，val就是 boolean
+    val; // never 主要永远完整性和标识出错的情况
   }
 }
-
 let n = MyError(); // n->never
 
 // Symbol BigInt Symbol表示独一无二 比如做一些常量 或者一些私有属性 都可以使用Symbol
+// BigInt - 对最大安全数字再进行操作，可能会不准确, 有溢出的现象
+
+
 let s1 = Symbol('zl');
 let s2 = Symbol('zl');
-
 console.log(s1 === s2); // false
 
-// BigInt - 对最大安全数字再进行操作，可能会不准确, 有溢出的现象
 // let num1 = Number.MAX_SAFE_INTEGER + 1;
 // let num2 = Number.MAX_SAFE_INTEGER + 2;
 // console.log(num1 === num2); // true
@@ -157,13 +164,15 @@ let num3 = BigInt(Number.MAX_SAFE_INTEGER) + BigInt(1);
 let num4 = BigInt(Number.MAX_SAFE_INTEGER) + BigInt(2);
 console.log(num3 === num4); // false 包装之后 false
 
+
 /** ======== 类型的问题  1. 类型推断 2. 类型问题  =======
  number和Number的区别？ 
  大小写的区别 string - String  前者的string只是后者String类型的一个表现
 **/
 
+
 // 11..toString()  11.0.toString
-let number1: number = 123;
+let number1: number = 123; // 基本类型，小写number标准
 let number2: Number = 123;
 let number3: number = Number(11); // 转成number赋值给number，也行
 // let number4 :number = new Number(11) {}  错误语法  不能把实例赋值给基本类型
@@ -228,8 +237,8 @@ enum WeekEnd {
   Saturday = 'Saturday',
   Sunday = 'Sunday',
 }
-console.log(WeekEnd.Monday); 
-console.log(WeekEnd['Monday']); 
+console.log(WeekEnd.Monday);
+console.log(WeekEnd['Monday']);
 
 // 枚举类型 - 简答理解，就是一个个列出来
 // 普通常量标识
