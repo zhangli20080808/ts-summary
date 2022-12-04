@@ -48,8 +48,8 @@ const teacher: {
 // 使用场景： 比如平时传入的参数是对象，类型又想使用object
 const create = (obj: object) => {};
 
-create('123123') // 基本类型
-create(null)
+create('123123'); // 基本类型
+create(null);
 create({});
 create([]);
 create(function () {});
@@ -78,6 +78,8 @@ const newData: Name = JSON.parse(rowData);
 /* ================         联合类型              ================*/
 // 联合类型可以看做并集，既能使用字符串，也能使用数字。当没有初始化的时候，只能调用两者中公有的方法
 // 联合类型最主要的使用场景还是 条件类型 部分
+
+let str: string | number;
 let arr3: (string | number)[] = [1, 2, 3, '4'];
 let arr4: Array<string | number> = [1, 2, 3, '4'];
 
@@ -134,7 +136,7 @@ function whileTue(): never {
 }
 // byType 方法 穷尽了 DataParams 的所有可能类型
 // 使用never避免出现未来拓展新的类没有对用类型的实现，目的就是写出绝对安全的代码
-type DataParams = string | number
+type DataParams = string | number;
 function byType(val: DataParams) {
   if (typeof val === 'string') {
     val.replace('a', '');
@@ -151,7 +153,6 @@ let n = MyError(); // n->never
 // Symbol BigInt Symbol表示独一无二 比如做一些常量 或者一些私有属性 都可以使用Symbol
 // BigInt - 对最大安全数字再进行操作，可能会不准确, 有溢出的现象
 
-
 let s1 = Symbol('zl');
 let s2 = Symbol('zl');
 console.log(s1 === s2); // false
@@ -164,25 +165,23 @@ let num3 = BigInt(Number.MAX_SAFE_INTEGER) + BigInt(1);
 let num4 = BigInt(Number.MAX_SAFE_INTEGER) + BigInt(2);
 console.log(num3 === num4); // false 包装之后 false
 
-
 /** ======== 类型的问题  1. 类型推断 2. 类型问题  =======
  number和Number的区别？ 
  大小写的区别 string - String  前者的string只是后者String类型的一个表现
 **/
 
-
-// 11..toString()  11.0.toString
-let number1: number = 123; // 基本类型，小写number标准
+let number1: number = 123; // 基本类型，小写number标注
+(11).toString(); // 会将原始类型包装成 对象类型 Number(11).toString()  11..toString()  11.0.toString
 let number2: Number = 123;
-let number3: number = Number(11); // 转成number赋值给number，也行
-// let number4 :number = new Number(11) {}  错误语法  不能把实例赋值给基本类型
-// 类也是一个类型 可以描述实例 也可以描述基本类型，一般我们标注类型都使用基本类型
-// https://juejin.cn/post/6844903710120738824 -》思考类型使用具体情节
-let number5: Number = new Number(11);
+
+let number3: number = new Number(11); // new Number()-> {} 错误语法 ,不能把实例赋值给基本类型
+let number4: number = Number(11); // 先转成number，再赋值给number，也是ok
+
+let number5: Number = new Number(11); // 类也是一个类型,可以描述实例,也可以描述基本类型，一般我们标注类型都使用基本类型
 
 /**
  tuple  tuple 是 “数量固定，类型可以各异” 版的数组。
- 典型的元组
+ 典型的元组 
  在 React 中有可能使用 tuple 的地方就是 custom hook 的返回值，注意 isHappy → tomIsHappy 以及其他名字的变化，这里使用 tuple 的好处就显现出来了：便于使用者重命名：
 
  const useHappy = () => {
@@ -337,15 +336,30 @@ class CheckUserRoleEnum {
 // 字面量 分为两种 1. 普通的 -》 'aaa' 2. 模版字面量  aaa${string} -> 表示以aaa开头，后面是任意string的字符串字面量类型
 
 // 比如约束 某个字符串开头的字符串字面量类型
+type Direction = 'left' | 'right' | 'top' | 'bottom'; // 类型别名
 function startFn(str: `#${string}`) {}
 const testA = startFn('123'); // 错误
 const testB = startFn('#123'); // 正确
+
+
+
+type CssPadding = `padding-${Direction}`;
+type CssMargin = `margin-${Direction}`; // 常规定义：
+type CssMargin2 = 
+| 'margin-left' | 'margin-right' 
+| 'margin-top'  | 'margin-bottom'; 
 
 // 特殊类型
 // never 代表不可达，比如函数抛异常的时候，返回值就是 never。
 // void 代表空，可以是 undefined 或 never。
 // any 是任意类型，任何类型都可以赋值给它，它也可以赋值给任何类型（除了 never）。
 // unknown 是未知类型，任何类型都可以赋值给它，但是它不可以赋值给别的类型。
+
+let value: unknown;
+value = true; // OK
+value = 42; // OK
+value = 'Hello World'; // OK
+let value3: boolean = value; // Error
 
 const magicFunction = (params: any) => {
   console.log(Math.round(params)); // number

@@ -3,7 +3,7 @@
  * 函数类型的两种声明方式
  1. 在我们熟悉的 “JS 函数” 上直接声明参数和返回值：
  2. 直接声明你想要的函数类型
- 注意：最好标注返回值，避免内部书写错误而没有错误提示,比如 add 方
+ 注意：最好标注返回值，避免内部书写错误而没有错误提示
  
  考虑入参和函数的返回值
  声名 不赋值 就是any 类型
@@ -50,30 +50,29 @@ sum3(1, 2, 3, 4);
 // '123' -> ['1','2','3']
 // 主要是ts中的 和js没啥关系 比如需要根据参数的不同 限制他的功能 中间不能包含其他语句
 // 我们希望 value是number的时候返回number数组 是string的时候返回string数组
-// function toArray(value: string): string[];
-// function toArray(value: number): number[];
-// function toArray(value: number | string) {
-//   if (typeof value === 'string') {
-//     return value.split('');
-//   } else {
-//     return value
-//       .toString()
-//       .split('')
-//       .map((item) => parseInt(item));
-//   }
-// }
-
-// 使用条件类型可以让函数重载的语法更简练
-type NameLabel = { name: string };
-type IdLabel = { id: number };
-type ToArrayRes<T> = T extends number ? IdLabel : NameLabel;
-function toArray<T extends string | number>(value: T): ToArrayRes<T>;
-function toArray(value: number | string): NameLabel | IdLabel {
+function toArray(value: string): string[];
+function toArray(value: number): number[];
+function toArray(value: number | string) {
   if (typeof value === 'string') {
-    return {
-      name: 'zl',
-    };
+    return value.split('');
+  } else {
+    return value
+      .toString()
+      .split('')
+      .map((item) => parseInt(item));
   }
-  return { id: 100 };
 }
 
+// 使用条件类型可以让函数重载的语法更简练
+// type NameLabel = { name: string };
+// type IdLabel = { id: number };
+// type ToArrayRes<T> = T extends number ? IdLabel : NameLabel;
+// function toArray<T extends string | number>(value: T): ToArrayRes<T>;
+// function toArray(value: number | string): NameLabel | IdLabel {
+//   if (typeof value === 'string') {
+//     return {
+//       name: 'zl',
+//     };
+//   }
+//   return { id: 100 };
+// }

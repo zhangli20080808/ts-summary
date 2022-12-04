@@ -11,17 +11,16 @@
 const sum = (a: string, b: string): string => {
   return a + b; // return {a,b}
 };
-// 类型注解 - 这种显示的声名count变量是一个number类型数据的写法，称为类型注解，我们来告诉ts 变量是什么类型
+// 类型注解 - 这种显示的声名count变量是一个number类型数据的写法，称为类型注解，由我们来告诉ts变量是什么类型
 let count: number 
-//  属性推断
+//  属性推断，类型推导
 let school = {
   name: 'zhangLi',
   age: 20,
 };
-type InputSize = ['large', 'small'];
 const { name } = school; // name:string
+// 通过索引访问操作符获取类型中的类型
 interface ISchool {
-  // 通过索引访问操作符获取类型中的类型
   name: string;
   age: number;
   address: {

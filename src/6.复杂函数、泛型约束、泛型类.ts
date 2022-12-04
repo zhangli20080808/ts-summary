@@ -1,7 +1,23 @@
+// function 函数关键字来声明 表达式的方式来声明
+// 考虑 入参 和 函数的返回值
+// 声明了 不赋值就是 any 类型
+
+// 1. 基本实例
+function sum1(a: string, b: string): string {
+  return a + b;
+}
+// 2. 函数表达式，可以将一个兼容的函数赋予给该函数
+type Sum1 = (a1: string, a2: string) => string;
+let sumTest: Sum1 = (a, b) => {
+  return a + b;
+};
+
 // 函数类型 rest参数
 function info(name: string, age: number, ...rest: any) {
   return rest;
 }
+info('zl', 123, 'aaaa', 'xxxx');
+
 // 函数中使用
 function createArray<T>(times: number, val: T): Array<T> {
   let result: T[] = [];
@@ -19,12 +35,12 @@ let res2 = createArray(3, '111');
 
 /** =======================  范型对一些类型的声名，如何使用范型具体作为一个类型注解 =========================**/
 // 泛型变量 可以使我们的T当做一部分使用 而不是整个类型的使用 灵活
-function ident<T>(arg: T): T {
+function ident<T>(arg: T, ...restList: T[]): T {
   return arg;
 }
 
 // 泛型函数类型
-type MyIdent = <T>(arg: T) => T;
+type MyIdent = <T>(arg: T, ...rest: T[]) => T;
 // let myIdent: <T>(arg: T) => T = ident; // ident和我们的范型类型是相匹配的
 let myIdent: MyIdent = ident; // ident和我们的范型类型是相匹配的
 
