@@ -18,6 +18,23 @@ function info(name: string, age: number, ...rest: any) {
 }
 info('zl', 123, 'aaaa', 'xxxx');
 
+// 匿名函数的类型
+// contexture typing -》 根据上下文猜测匿名函数参数的类型
+const names = ['Alice', 'Bob', 'Eve']; // Array<string>
+const infoList = [
+  { name: 'zl', age: 20 },
+  { name: 'dt', age: 30 },
+];
+names.forEach(function (s) {
+  console.log(s.toUpperCase());
+  console.log(s.toUppercase());
+});
+
+
+
+                infoList.map(function())
+
+
 // 函数中使用
 function createArray<T>(times: number, val: T): Array<T> {
   let result: T[] = [];

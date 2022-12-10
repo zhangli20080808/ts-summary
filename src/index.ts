@@ -1,23 +1,8 @@
-// 数字枚举
-enum Week {
-  Monday = 1,
-  Tuesday,
-  Wednesday,
-  Thursday,
-  Friday,
-  Saturday,
-  Sunday,
-}
-// 字符串枚举
-enum WeekEnd {
-  Monday = 'Monday',
-  Tuesday = 'Tuesday',
-  Wednesday = 'Wednesday',
-  Thursday = 'Thursday',
-  Friday = 'Friday',
-  Saturday = 'Saturday',
-  Sunday = 'Sunday',
-}
-console.log(WeekEnd.Monday);
-console.log(WeekEnd['Monday']);
+type StartWith<
+  Str extends string,
+  Prefix extends string
+> = Str extends `${Prefix}${string}` ? true : false;
+
+type StartWithRes = StartWith<'guanAndGong', 'guan'>; // true
+type StartWithRes2 = StartWith<'guanAndGong', 'aguan'>; // false
 export {}; // 在当前文件搜索

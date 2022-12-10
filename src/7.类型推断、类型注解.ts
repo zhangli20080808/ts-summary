@@ -8,17 +8,25 @@
  
  */
 
+// const sum: (a: string, b: string) => string
 const sum = (a: string, b: string): string => {
   return a + b; // return {a,b}
 };
 // 类型注解 - 这种显示的声名count变量是一个number类型数据的写法，称为类型注解，由我们来告诉ts变量是什么类型
-let count: number 
+let count: number;
 //  属性推断，类型推导
 let school = {
   name: 'zhangLi',
   age: 20,
 };
-const { name } = school; // name:string
+
+// let names = 'zl';
+// console.log(names.toUpperCase()) // 内部会自动包装成 对象类型
+// console.log(new String(names).toUpperCase())
+
+type MySchool = typeof school;
+// 类型的反推 把某个类型拿出来再去使用
+
 // 通过索引访问操作符获取类型中的类型
 interface ISchool {
   name: string;
@@ -28,8 +36,5 @@ interface ISchool {
   };
 }
 type Test = ISchool['address']['n']; // 接口中取属性 只能使用[]
-
-// 类型的反推 把某个类型拿出来再去使用
-type MySchool = typeof school;
 
 export {};

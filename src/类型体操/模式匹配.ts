@@ -58,14 +58,17 @@ type GetFirstRes8 = ShiftArr<[1, 2, 3]>; // [1,2]
 type GetFirstRes9 = ShiftArr<[]>; // nerve
 
 // 字符串类型
-// 1. 判断字符串是否以某个  前缀开头
+
+// 应用场景
+// 判断字符串是否以某个  前缀开头
 // 用Str 去匹配一个模式类型，模式类型的前缀是 Prefix，后面是任意string
-type StartWidth<
+type StartWith<
   Str extends string,
   Prefix extends string
 > = Str extends `${Prefix}${string}` ? true : false;
 
-type StartWidthRes = StartWidth<'guanAndGong', 'guan'>; // true
+type StartWithRes = StartWith<'guanAndGong', 'guan'>; // true
+type StartWithRes2 = StartWith<'guanAndGong', 'aguan'>; // false
 
 // 2. 字符串可以匹配一个模式类型，提取想要的部分，比如实现字符串替换
 // 生命要替换的Str，待替换的字符串From,替换成的字符串

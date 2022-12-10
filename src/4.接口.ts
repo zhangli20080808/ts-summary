@@ -44,6 +44,12 @@
 type Name1 = {
   name: string;
 };
+
+interface A {
+
+}
+interface A {}
+
 type User1 = Name & { age: number };
 
 /* ===============  interface extends type =================*/
@@ -65,9 +71,10 @@ type User3 = Name & {
 
 /* ===============  描述函数 =================*/
 // 一种特殊的接口类型 - 接口当名字的函数类型
+type FullName = (firstName: string, secondName: string) => string
 interface IFullName {
-  // 在接口中不能 ()=>void
-  // apple: () => void;
+  // 注意：在接口中不能 ()=>void
+  // apple: () => void; 
   (firstName: string, secondName: string): string;
 }
 let fullName: IFullName = (firstName, secondName): string => {
@@ -75,13 +82,12 @@ let fullName: IFullName = (firstName, secondName): string => {
   return "123";
 };
 
-/* ===============  描述混合类型  计数器 一个函数返回一个函数 返回的函数有属性 既是函数又是属性 =================*/
+/* ===============  描述混合类型  一个函数返回一个函数,返回的函数有属性 既是函数又是属性 =================*/
+// 使用场景：一个函数返回一个函数,返回的函数有属性 返回的函数既是函数又有属性
 interface ICount {
   (): number;
-
   count: number;
 }
-
 const fn: ICount = () => {
   return ++fn.count;
 };
@@ -93,29 +99,25 @@ console.log(fn());
 interface IVeg {
   taste: string;
   color: string;
-  // readonly a?: string;
-
-  // 可选属性 只读属性
-  [key: string]: any; // 自定义类型 限制死的 其他的随意
+  // readonly a?: string;   // 可选属性 只读属性
+  [key: string]: any; // 自定义类型 限制死的，除了 taste,color属性，其他的属性随意
 }
 
 // 1. 如果定义的值比接口中的多 可以采用类型断言 直接断言成对应的接口
-const tomato: IVeg = {
-  taste: "great",
-  color: "red",
-  size: 10,
-} as IVeg;
+// const tomato: IVeg = {
+//   taste: "great",
+//   color: "red",
+//   size: 10,
+// } as IVeg;
 
-// 2. 多个重名接口会进行合并操作
-interface IVeg {
-  size: number;
-}
-
+// 2. 多个重名接口会进行合并操作, 会破坏原接口，最好去拓展继承
+// interface IVeg {
+//   size: number;
+// }
 // 接口拓展 不改变原有接口上
 interface ITest extends IVeg {
   size: number;
 }
-
 const tomato2: ITest = {
   taste: "great",
   color: "red",
@@ -245,6 +247,18 @@ interface User {
 interface User {
   sex: string;
 }
+
+interface Box {
+  height: number;
+  width: number;
+}
+interface Box {
+  scale: number;
+}
+
+
+
+
 
 /*
 User 接口为 {

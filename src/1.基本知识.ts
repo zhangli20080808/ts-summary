@@ -10,6 +10,7 @@
  */
 
 // 基础类型
+
 let married: boolean = false;
 let age: number = 123;
 let firstName: string = 'zl';
@@ -79,13 +80,32 @@ const newData: Name = JSON.parse(rowData);
 // 联合类型可以看做并集，既能使用字符串，也能使用数字。当没有初始化的时候，只能调用两者中公有的方法
 // 联合类型最主要的使用场景还是 条件类型 部分
 
-let str: string | number;
+let testName: string | number;
 let arr3: (string | number)[] = [1, 2, 3, '4'];
 let arr4: Array<string | number> = [1, 2, 3, '4'];
 
 let ele: HTMLElement | null = document.getElementById('id');
 ele!.style.color = 'red'; // ! 非空断言，一定有值 ts语法只能存在ts中
 // ele?.style.color = 'red'; // ele&&ele.style
+
+console.log(testName!.toString()); // 未赋值前只能使用公共方法，比如 toString,toLocaleString,valueOf
+testName = 3;
+console.log(testName.toFixed(2)); // 调用符合number类型的方法
+testName = 'zl';
+console.log(testName.length); // 调用符合string类型的方法
+
+let names: string | number;
+console.log((names! as number).toFixed(2));
+console.log((names! as string).length);
+const myCanvas =
+  // HTMLElement
+  document.getElementById('main_canvas') as HTMLCanvasElement;
+// 父类 as 子类，联合类型 as 单个
+// 有些情况的类型断言 TS 会拒绝，比如
+const x = 'hello' as number;
+// 有时候 可以用 any as T来 "欺瞒" TS -> 双重断言
+console.log(names! as unknown as boolean);
+// const a  = (names! as unknown) as T
 
 // 把值当做类型的时候，值就和类型相同
 type Increase = Boolean | 1 | 0;
@@ -336,18 +356,60 @@ class CheckUserRoleEnum {
 // 字面量 分为两种 1. 普通的 -》 'aaa' 2. 模版字面量  aaa${string} -> 表示以aaa开头，后面是任意string的字符串字面量类型
 
 // 比如约束 某个字符串开头的字符串字面量类型
-type Direction = 'left' | 'right' | 'top' | 'bottom'; // 类型别名
+
+// 字面量类型
+
+const top: 'Top' = 'Top'; // top类型是 'Top'，值只能是 'Top'
+const bottom: 'Bottom' = 'Bottom'; // bottom类型是 'Bottom'，值只能是 'Bottom'
+
+const foo = 1; // foo 的类型是1（而不是整数）
+
+// 如果使用 typeof 操作符
+type A = typeof top; // 'Top'
+type B = typeof foo; // 1
+
+// 对于 let
+let foo1 = 1; // foo1: 对应类型为 number
+
+type Direction = 'Left' | 'Right' | 'Top' | 'Bottom'; // 类型别名
+
+function move(direction: Direction) {} // 可以实现枚举的效果
+move('');
+
+// 可以用字面类型来约束一些特殊的函数，比如：
+function compare(a: string, b: string): -1 | 0 | 1 {
+  return a === b ? 0 : a > b ? 1 : -1;
+}
+
+// 类型字面量
+
+type Person = {
+  name: string;
+  age: number;
+};
+let person: Person = {
+  name: 'zl',
+  age: 20,
+};
+
+type CssPadding = `padding-${Direction}`;
+type CssMargin = `margin-${Direction}`;
+// 常规定义：
+type CssMargin2 =
+  | 'margin-left'
+  | 'margin-right'
+  | 'margin-top'
+  | 'margin-bottom';
+
+// 模版字面量
 function startFn(str: `#${string}`) {}
 const testA = startFn('123'); // 错误
 const testB = startFn('#123'); // 正确
 
+// 字符串字面量和联合类型的区别
 
-
-type CssPadding = `padding-${Direction}`;
-type CssMargin = `margin-${Direction}`; // 常规定义：
-type CssMargin2 = 
-| 'margin-left' | 'margin-right' 
-| 'margin-top'  | 'margin-bottom'; 
+type T1 = '1' | '2' | '3'; // 字符串字面量 -  值只能限定为 '1','2','3'
+type T2 = string | number | boolean; // 联合类型-  值，无所谓，三者其中之一就行
 
 // 特殊类型
 // never 代表不可达，比如函数抛异常的时候，返回值就是 never。
@@ -382,5 +444,18 @@ const magicFunction2 = (params: unknown) => {
   }
   throw Error('error');
 };
+
+function doSomething(x: string | null) {
+  if (x === null) {
+    // do nothing
+  } else {
+    console.log('Hello, ' + x.toUpperCase());
+  }
+}
+// 可以用`!` 操作符,来断言某个值不是空值
+function doSomething2(x: string | null) {
+  console.log("Hello, " + x!.toUpperCase());
+}
+
 
 export {};
