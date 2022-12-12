@@ -34,7 +34,15 @@ interface ISchool {
   address: {
     n: string;
   };
+  load: () => void;
+  lo(): number;
 }
 type Test = ISchool['address']['n']; // 接口中取属性 只能使用[]
 
+interface ActionContext {
+  (state: string, commit: any): void;
+}
+let actionContext: ActionContext = (state, commit): void => {
+  console.log('state', state, commit);
+};
 export {};

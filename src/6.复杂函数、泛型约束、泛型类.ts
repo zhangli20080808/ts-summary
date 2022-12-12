@@ -43,12 +43,10 @@ function createArray<T>(times: number, val: T): Array<T> {
   }
   return result;
 }
-
 // 使用方式 2种 复杂场景可能需要手动传入
 let res = createArray<string>(3, 'abc'); // 不传入会自动推到
-
 // 类型推断
-let res2 = createArray(3, '111');
+let res2 = createArray(3, '111'); // res2-> string[]
 
 /** =======================  范型对一些类型的声名，如何使用范型具体作为一个类型注解 =========================**/
 // 泛型变量 可以使我们的T当做一部分使用 而不是整个类型的使用 灵活
@@ -68,10 +66,10 @@ interface GenericIdent<T> {
 
 let myIdent2: GenericIdent<number> = ident;
 
-// 泛型可以使用多个 比如有很多参数 每个参数都有类型
+// 泛型可以使用多个.比如有很多参数 每个参数都有类型
 
 // 交换类型 传入参数是个元组 [number,string] => [string,number]
-// A B代表类型变量
+// T K代表类型变量
 function swap<T, K>(tuple: [T, K]): [K, T] {
   return [tuple[1], tuple[0]];
 }

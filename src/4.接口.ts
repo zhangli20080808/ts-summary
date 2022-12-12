@@ -45,9 +45,7 @@ type Name1 = {
   name: string;
 };
 
-interface A {
-
-}
+interface A {}
 interface A {}
 
 type User1 = Name & { age: number };
@@ -59,7 +57,7 @@ type Name = {
 interface User extends Name {
   age: number;
 }
-let user: User = { name: "zl", age: 10, sex: "f" };
+let user: User = { name: 'zl', age: 10, sex: 'f' };
 
 /* ===============  type 与 interface 交叉 =================*/
 interface Name3 {
@@ -71,15 +69,15 @@ type User3 = Name & {
 
 /* ===============  描述函数 =================*/
 // 一种特殊的接口类型 - 接口当名字的函数类型
-type FullName = (firstName: string, secondName: string) => string
+type FullName = (firstName: string, secondName: string) => string;
 interface IFullName {
   // 注意：在接口中不能 ()=>void
-  // apple: () => void; 
+  // apple: () => void;
   (firstName: string, secondName: string): string;
 }
 let fullName: IFullName = (firstName, secondName): string => {
   console.log(firstName, secondName);
-  return "123";
+  return '123';
 };
 
 /* ===============  描述混合类型  一个函数返回一个函数,返回的函数有属性 既是函数又是属性 =================*/
@@ -119,8 +117,8 @@ interface ITest extends IVeg {
   size: number;
 }
 const tomato2: ITest = {
-  taste: "great",
-  color: "red",
+  taste: 'great',
+  color: 'red',
   size: 10,
 };
 
@@ -129,7 +127,7 @@ interface IArr {
   [key: number]: any;
 }
 
-let arr: IArr = [1, {}, "33"];
+let arr: IArr = [1, {}, '33'];
 
 // 接口可以被类实现
 interface SpeakAble {
@@ -151,7 +149,7 @@ interface SpeakB {
 
 class Speak implements SpeakAble, SpeakB {
   sayChinese(): void {
-    throw new Error("Method not implemented.");
+    throw new Error('Method not implemented.');
   }
 
   // 不加 ! 会报错
@@ -160,7 +158,7 @@ class Speak implements SpeakAble, SpeakB {
   name!: string;
 
   say(): void {
-    throw new Error("Method not implemented.");
+    throw new Error('Method not implemented.');
   }
 }
 
@@ -170,7 +168,7 @@ abstract class Animal {
   abstract name: string; // 可以没有实现
   // 没有标记成 abstract 可以去实现  但是抽象属性必须在子类中实现
   eat() {
-    console.log("eating");
+    console.log('eating');
   }
 }
 
@@ -200,17 +198,17 @@ const setPersonName = (person: Teacher, name: string): void => {
   person.name = name;
 };
 const person = {
-  name: "zl",
-  sex: "male",
+  name: 'zl',
+  sex: 'male',
   say() {
-    return "hello";
+    return 'hello';
   },
   teach() {
-    return "teach";
+    return 'teach';
   },
 };
 getPersonName(person); // 不报错
-setPersonName(person, "zl"); // 不报错
+setPersonName(person, 'zl'); // 不报错
 // getPersonName({name: 'zl', sex: '123'}) // 报错 -> 当传入字面量的时候，TS会进行强校验，此处多传了
 // 但是如果以一个缓存变量的形式传入，就没有这么严格了，只要有就行，多余的属性没有关系
 
@@ -235,7 +233,7 @@ type PetList = [Dog, Pet];
 // type 语句中还可以使用 typeof 获取实例的 类型进行赋值
 
 // 当你想获取一个变量的类型时，使用 typeof
-let div = document.createElement("div");
+let div = document.createElement('div');
 type B = typeof div;
 
 // interface 可以而 type 不行 -能够声明合并
@@ -256,9 +254,25 @@ interface Box {
   scale: number;
 }
 
-
-
-
+// type 定义基础类型
+type Num = number;
+// type 定义联合类型
+type BaseType = string | number;
+interface Car {
+  brandNo: string;
+}
+interface Plane {
+  brandNo: string;
+  no: string;
+}
+type TypeCombine = Car | Plane;
+let typeComb: TypeCombine = { brandNo: '特斯拉', no: 'xx' };
+// 定义元组
+type TypeTuple = [Car, Plane];
+let typeTuple: TypeTuple = [
+  { brandNo: '奥迪' },
+  { brandNo: '大正', no: 'xxx' },
+];
 
 /*
 User 接口为 {
@@ -267,5 +281,15 @@ User 接口为 {
   sex: string
 }
 */
+
+type Group = { groupName: string; memberNum: number };
+type GroupInfoLog = { info: string; happen: string };
+type GroupMember = Group & GroupInfoLog;
+let test: GroupMember = {
+  groupName: '001',
+  memberNum: 10,
+  info: 'xxx',
+  happen: '发生事故了',
+};
 
 export {};
