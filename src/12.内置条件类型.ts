@@ -2,9 +2,10 @@
    后面 - 重点理解 infer 和 TS高级类型 以及泛型的升级进阶
  * 条件类型
  * 语法？ 三元表达式(ts中的语法) -> T extends U ? X : Y
- * 场景？对于类型无法确定的场景， 使用条件类型来在 运行时动态 来确定最终的类型
+ * 场景？对于类型无法确定的场景，使用条件类型来，在运行时动态，来确定最终的类型
  * 注意：条件类型不会立刻完成判断，有时会在使用的时候完成判断
-   理解成本：何时条件类型系统会收集到足够的信息来确定类型，也就是说，条件类型有时不会立刻完成判断，比如工具库提供的函数，需要用户在使用时传入参数才会完成 条件类型 的判断
+   理解成本：何时条件类型系统会收集到足够的信息来确定类型，也就是说，条件类型有时不会立刻完成判断，
+   比如工具库提供的函数，需要用户在使用时传入参数才会完成 条件类型 的判断
  *
  * 内置条件类型 never-永远拿不到，联合类型中如何有never出现，是没有意义的，会变成空
  * 1. Exclude 类型的排除 不同的部分
@@ -15,22 +16,83 @@
    5.1 查看函数返回值类型
  */
 
+interface Fish {
+  name1: string;
+}
+interface Swimming {
+  name2: string;
+}
+interface Bird {
+  name3: string;
+}
+interface Sky {
+  name4: string;
+}
+
+// 泛型约束，约束这个人是否满足他的特性，满足为true，不满足为false, 比如之前的 T extends number 满足number特性就ok
+type Condition<T> = T extends Fish ? Swimming : Sky;
+let con: Condition<Fish> = { name2: 'water' };
+
+// 思考？如果同时传入了 Fish 和 Bird, 结果会如何呢？
+type XXX = Condition<Fish | Bird>; // Swimming | Sky
+
+/**
+ * 条件类型的分发 
+  1. 先将Fish传入-> 拿到 Swimming， 对应 属性为 name2 
+  2. 再讲Bird传入-> 拿到 Sky，对应 属性为 nam4
+  3. 最终采用 两者的联合类型，也就是 Swimming | Sky
+  
+  注意：只有联合类型会进行分发操作，最终取联合类型
+
+ * 条件类型有一个特征 分布式有条件类型 ，但是分布式有条件类型是有前提的，
+ * 条件类型里待检查的类型必须是 naked type parameter
+ *
+ * none naked type 此时包裹到其他东西里面去了 就不是 naked类型了 这个时候就不分发了 因为传入进去可能不匹配了
+ * type condition2<T> = [T] extends [Fish] ? Water : Sky
+ */
+
+let con1: Condition<Fish | Bird> = { name2: '2', name4: '4' };
+let con2: Condition<Fish | Bird> = { name4: '4' };
+
+// Fish & Bird 交叉完成之后，拥有 name1和name2 属性，满足 Bird 的约束，所以返回 Swimming
+let con3: Condition<Fish & Bird> = { name2: 'name2' }; // 没有分发，交叉类型不考虑
+
+// 找出T中不包含U的部分
+type Diff<T, U> = T extends U ? never : T;
+type R = Diff<'a' | 'b' | 'c' | 'd', 'a' | 'b' | 'c'>; // ->d
+
+type Filter<T, U> = T extends U ? T : never;
+type R4 = Filter<'a' | 'b' | 'c' | 'd', 'a' | 'b' | 'c'>; // -> a b c
+
 /** ==================  类型运算,类型有了，可以做哪些类型运算呢?  =========================**/
 // 条件 -》 extends ？：  简单理解，也就是ts类型系统中的 if else
-type demo = 1 extends 2 ? true : false; // 静态的，没什么意义，ts中一的类型运算都是用来做一些动态的类型运算的
-type isTwo<T> = T extends 2 ? true : false;
+
+type demo = 1 extends 2 ? true : false; // false 静态的，没什么意义，ts中一的类型运算都是用来做一些动态的类型运算的
+type isTwo<T> = T extends 2 ? true : false; //
 type res = isTwo<1>; // false
 type res2 = isTwo<2>; // true 这种类型 也叫做高级类型
 
 // 高级类型的特点是，传入类型参数，经过一系列类型运算后，返回新的类型
 /** ====================================  泛型约束  =========================**/
+
 // 获取对象中的某个key中
+
 function pickSingleValue<T extends object, U extends keyof T>(
   obj: T,
   key: U
 ): T[U] {
   return obj[key];
 }
+let obj = {
+  name: 'dt',
+  age: 18,
+};
+pickSingleValue(obj, 'age');
+
+
+
+
+
 /** ====================================   条件分发  =========================**/
 /*
     概念：
@@ -53,7 +115,7 @@ function pickSingleValue<T extends object, U extends keyof T>(
    * 没有被 [] 额外包装的联合类型参数，在条件类型进行判定时会将联合类型分发，分别进行判断
    */
 // naked type 裸类型 单纯是T -> 条件类型会在实例化时期自动分发到联合类型上
-type Naked<T> = T extends boolean ? 'Y' : 'N'; 
+type Naked<T> = T extends boolean ? 'Y' : 'N';
 type Wrapped<T> = [T] extends [boolean] ? 'Y' : 'N';
 // type A = Wrapped<false> // 不分发 -》'Y'
 // type B = Wrapped<string> // 不分发 -》'N'
@@ -64,46 +126,6 @@ type Wrapped<T> = [T] extends [boolean] ? 'Y' : 'N';
    */
 type Distributed = Naked<string | boolean>; // 'N' | 'Y'
 type NotDistributed = Wrapped<number | boolean>; // 'N'
-
-interface Fish {
-  name1: string;
-}
-
-interface Water {
-  name2: string;
-}
-
-interface Bird {
-  name3: string;
-}
-
-interface Sky {
-  name4: string;
-}
-
-// 源码用的多些  写代码会比较少 范型约束 约束这个人是否满足Fish的特性
-type Condition<T> = T extends Fish ? Water : Sky;
-let con: Condition<Fish> = { name2: 'water' };
-
-/**
- * 条件类型的分发 (先将Fish传入->name2 再讲Bird传入->name4)
- * 条件类型有一个特征 分布式有条件类型 ，但是分布式有条件类型是有前提的，
- * 条件类型里待检查的类型必须是 naked type parameter
- *
- * none naked type 此时包裹到其他东西里面去了 就不是 naked类型了 这个时候就不分发了 因为传入进去可能不匹配了
- * type condition2<T> = [T] extends [Fish] ? Water : Sky
- */
-let con1: Condition<Fish | Bird> = { name2: '2', name4: '4' };
-let con2: Condition<Fish | Bird> = { name4: '4' };
-
-let con3: Condition<Fish & Bird> = { name2: 'name2' }; // 没有分发，交叉类型不考虑
-
-// 找出T中不包含U的部分
-type Diff<T, U> = T extends U ? never : T;
-type R = Diff<'a' | 'b' | 'c' | 'd', 'a' | 'b' | 'c'>; // ->d
-
-type Filter<T, U> = T extends U ? T : never;
-type R4 = Filter<'a' | 'b' | 'c' | 'd', 'a' | 'b' | 'c'>; // -> a b c
 
 /** ====================================  Exclude  =========================**/
 // type Exclude<T, U> = T extends U ? never : T

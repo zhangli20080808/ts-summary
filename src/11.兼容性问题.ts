@@ -49,6 +49,7 @@ animal = person  // 我要的你有就行 person有 name  age，就可以赋值
 
 
 // 函数的兼容性 参数要求 赋值的函数的参数要 <= 被赋值函数的参数 和接口正好相反
+
 let sum1 = (a: string, b: string) => {
 }
 let sum2 = (a: string) => {
@@ -91,4 +92,17 @@ type B1 = B<number>
 let a1!: A1
 let b1!: B1
 // a1 = b1
+
+
+// 函数的返回值 ,zun
+type SumFn1 = ()=> string | number
+type SumFn2 = () => string
+
+let s1!: SumFn1
+let s2!: SumFn2
+
+// s1 = s2
+s2 = s1
+
+
 export {}
