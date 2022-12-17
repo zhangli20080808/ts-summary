@@ -27,13 +27,8 @@ const infoList = [
 ];
 names.forEach(function (s) {
   console.log(s.toUpperCase());
-  console.log(s.toUppercase());
+  // console.log(s.toUppercase());
 });
-
-
-
-                infoList.map(function())
-
 
 // 函数中使用
 function createArray<T>(times: number, val: T): Array<T> {
@@ -77,6 +72,7 @@ let r = swap([1, 2]); //  [number, number]
 
 // 写到函数上的泛型 表示调用函数的时候 传入具体类型
 // 写在接口后面的 表示使用接口时传入的类型  MySwap<T, K>
+
 interface MySwap<T, K> {
   (tuple: [T, K]): [K, T];
 }
@@ -88,23 +84,30 @@ const swap2 = <B>(tuple: IArr<B>): IArr<B> => {
 };
 let r1 = swap2([0, '1']); //  IArr<string | number>
 
-// 函数求和
-const sum = <T extends number>(a: T, b: T): T => {
-  return (a + b) as T;
-};
-sum(1, 2); // 1和2具备数字的能力，约束T是number类型
-// extends 泛型约束 约束泛型的能力, 来收窄类型约束
-// 希望传入的数据 只要是带有length属性就可以 -> 可以使字符串 数组各种把
-// 此处的extends不是继承的意思 是包含、约束的意思 T满足WithLen里面的条件
-type WithLen = { length: number };
+// 泛型约束 -  函数求和 关键字 - extends, 表示当前变量具备哪些能力
 
+/**
+ * extends 泛型约束，约束泛型的能力, 来收窄类型约束
+ * 1和2具备数字的能力，约束T 都是number类型，有能加的功能就行
+ */
+const sum = <T extends number>(a: T, b: T): T => {
+  return a + b;
+  return (a + b) as T; // number类型相加，ts可能会有一些小疑惑，强转
+};
+sum(1, 2);
+
+// 希望传入的数据 只要是带有length属性就可以 -> 可以使字符串 数组.
+// 此处的extends不是继承的意思。是包含、约束的意思 T满足WithLen里面的条件
+type WithLen = { length: number };
 function getType<T extends WithLen>(obj: T) {
   obj.length;
 }
-
 getType('1');
+getType([]);
+getType({});
 
 // 默认泛型 不传递 默认给与类型
+
 interface DStr<T = string> {
   name: T;
 }
@@ -115,22 +118,29 @@ type T3 = DStr<boolean>;
 let str1: T1 = { name: '123' };
 let str2: T2 = { name: 123 };
 let str3: T3 = { name: true };
+let str4: T3 = { name: '11' };
 
 // 属性约束
 // 1. T是一个对象类型 2.K是T中的一个属性
 // keyof 表示取对象中所有的key属性
 // T extends object 理解为T 被限制为对象类型
-// 比如T这个对象的键名包括a b c，那么U的取值只能是"a" "b" "c"之一
+// 比如T这个对象的键名包括a b c，那么 T 的取值只能是"a" "b" "c"之一
+
 const getVal = <T extends Object, K extends keyof T>(obj: T, key: K) => {
   return obj[key];
 };
 getVal({ a: 1, b: 2 }, 'a');
 
-type t1 = keyof any; // string | number | symbol
-type t2 = keyof (string | number); // "toString" | "valueOf"
+// 取任意类型的key
+type T11 = keyof any; // string | number | symbol
+// 取当前对象的所有的key属性
+type T22 = keyof (string | number); // "toString" | "valueOf"
+
+type T33 = keyof string;
 
 // 泛型类 类中使用泛型
 // 注意 泛型类指的是我们实例部分的类型  类的静态属性是不能使用的
+
 class MyArray<T> {
   public arr: T[] = [];
   public num!: T;
@@ -138,7 +148,6 @@ class MyArray<T> {
   add(v: T) {
     this.arr.push(v);
   }
-
   set!: (x: T, y: T) => T;
 }
 
@@ -148,6 +157,7 @@ array.add(2);
 array.add(3);
 
 // 类类型在工厂函数中的应用
+
 function create<T>(c: { new (): T }): T {
   return new c();
 }
@@ -171,6 +181,9 @@ interface ClassWidthConstructor {
 const testOne = (outerClass: ClassWidthConstructor) => {
   return new outerClass('new');
 };
+
+
+
 class TestOne {
   name: string;
   constructor(str: string) {
@@ -183,6 +196,9 @@ interface DateType {
   new (): Date;
   (dataString: string): string;
 }
+
+
+
 // 函数泛型
 // 函数重载
 export {};

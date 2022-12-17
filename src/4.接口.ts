@@ -68,6 +68,8 @@ type User3 = Name & {
 };
 
 /* ===============  描述函数 =================*/
+
+
 // 一种特殊的接口类型 - 接口当名字的函数类型
 type FullName = (firstName: string, secondName: string) => string;
 interface IFullName {
@@ -94,6 +96,7 @@ console.log(fn());
 console.log(fn());
 
 /* ===============  接口特性 =================*/
+
 interface IVeg {
   taste: string;
   color: string;
@@ -123,10 +126,11 @@ const tomato2: ITest = {
 };
 
 /* ===============  可索引接口 =================*/
+
+
 interface IArr {
   [key: number]: any;
 }
-
 let arr: IArr = [1, {}, '33'];
 
 // 接口可以被类实现

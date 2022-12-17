@@ -5,7 +5,7 @@ let temp!: string | number
 
 temp = str
 
-// str  = temp  // ts是从安全性来考虑
+str  = temp  // ts是从安全性来考虑
 
 // ts也叫鸭子类型检测 只要结构长得像就可以
 interface myNum {
@@ -18,11 +18,16 @@ let myNumber!: myNum   // myNumber只要有toString方法就行 你有就行
 // let str3:string = myNumber // myNum只有一个方法 从安全行考虑 不要从小类型可以赋值给大类型这种思路思考
 
 //
+
+
 /**
  * 2. 接口类型的兼容
  *  传入的、声明的变量不匹配
  *  原理： Duck-check 就是说 只要目标类型中声明的属性变量在源类型中存在就兼容
  */
+
+// 传入的、声明的变量不匹配
+//  原理： Duck-check 就是说 只要目标类型中声明的属性变量在源类型中存在就兼容
 interface Animal {
     name: string,
     age: string
@@ -36,9 +41,13 @@ interface Person {
 
 let animal!: Animal
 let person!: Person
-animal = person  // 我要的你有就行 person有 name  age
+animal = person  // 我要的你有就行 person有 name  age，就可以赋值
 
-// 3. 函数的兼容性问题 参数 返回值 比如forEach index可以不写
+
+
+// 3. 函数的兼容性问题,参数 返回值 比如forEach index可以不写
+
+
 // 函数的兼容性 参数要求 赋值的函数的参数要 <= 被赋值函数的参数 和接口正好相反
 let sum1 = (a: string, b: string) => {
 }
@@ -48,16 +57,16 @@ let sum2 = (a: string) => {
 
 // 实现一个简单的forEach
 type ForEachFn<T> = (item: T, index: number) => void
-
 function forEach<T>(arr: T[], cb: ForEachFn<T>) {
     for (let i = 0; i < arr.length; i++) {
         cb(arr[i], i)
     }
 }
-
 // 能用接口就用接口 用不了就用别名 没有继承没有拓展直接用type
 forEach<number>([1, 2, 4], function (item) {
 })
+
+
 
 // 1.基本类型 可以把小范围的赋予给大范围的
 // 2.接口类型 可以把多的赋予给少的

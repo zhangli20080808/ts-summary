@@ -45,6 +45,8 @@ let sum3 = (...args: (number | string)[]) => {};
 sum3(1, 2, 3, 4);
 
 // 函数的重载 - 以参数数量或类型区分多个同名函数
+
+
 // 比如 希望把一个字符串 或者 数字 转换成一个数组
 // 123 -> [1,2,3]
 // '123' -> ['1','2','3']
@@ -62,6 +64,7 @@ function toArray(value: number | string) {
       .map((item) => parseInt(item));
   }
 }
+// 学习完条件类型可以对上述代码进行优化？后续回头再来更改
 
 // 使用条件类型可以让函数重载的语法更简练
 // type NameLabel = { name: string };
