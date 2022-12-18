@@ -44,11 +44,7 @@ type XXX = Condition<Fish | Bird>; // Swimming | Sky
   
   注意：只有联合类型会进行分发操作，最终取联合类型
 
- * 条件类型有一个特征 分布式有条件类型 ，但是分布式有条件类型是有前提的，
- * 条件类型里待检查的类型必须是 naked type parameter
- *
  * none naked type 此时包裹到其他东西里面去了 就不是 naked类型了 这个时候就不分发了 因为传入进去可能不匹配了
- * type condition2<T> = [T] extends [Fish] ? Water : Sky
  */
 
 let con1: Condition<Fish | Bird> = { name2: '2', name4: '4' };
@@ -57,9 +53,14 @@ let con2: Condition<Fish | Bird> = { name4: '4' };
 // Fish & Bird 交叉完成之后，拥有 name1和name2 属性，满足 Bird 的约束，所以返回 Swimming
 let con3: Condition<Fish & Bird> = { name2: 'name2' }; // 没有分发，交叉类型不考虑
 
-// 找出T中不包含U的部分
+// 条件类型有一个特征 分布式有条件类型 ，但是分布式有条件类型是有前提的.条件类型里待检查的类型必须是 naked type parameter
+
+// none naked type -> 1. [T] 2. {t: T} 3. T[] 都不是裸类型的，不会进行分发，会将整体传入
+type condition2<T> = [T] extends [Fish] ? Swimming : Sky;
+
+// 比如->  找出T中不包含U的部分
 type Diff<T, U> = T extends U ? never : T;
-type R = Diff<'a' | 'b' | 'c' | 'd', 'a' | 'b' | 'c'>; // ->d
+type R = Diff<'a' | 'b' | 'c' | 'd', 'a' | 'b' | 'c'>; // -> never | never| never | 'd'
 
 type Filter<T, U> = T extends U ? T : never;
 type R4 = Filter<'a' | 'b' | 'c' | 'd', 'a' | 'b' | 'c'>; // -> a b c
@@ -76,7 +77,6 @@ type res2 = isTwo<2>; // true 这种类型 也叫做高级类型
 /** ====================================  泛型约束  =========================**/
 
 // 获取对象中的某个key中
-
 function pickSingleValue<T extends object, U extends keyof T>(
   obj: T,
   key: U
@@ -88,10 +88,6 @@ let obj = {
   age: 18,
 };
 pickSingleValue(obj, 'age');
-
-
-
-
 
 /** ====================================   条件分发  =========================**/
 /*
@@ -114,7 +110,22 @@ pickSingleValue(obj, 'age');
    *
    * 没有被 [] 额外包装的联合类型参数，在条件类型进行判定时会将联合类型分发，分别进行判断
    */
+
+type TypeName<T> = (payload: T) => void;
+type Test = TypeName<string | (() => void)>;
+// 分解
+// 1. 对于 TypeName，它内部的类型参数 T 是没有被包裹过的
+// 2. TypeName<string | (() => void)> 会被分发为 TypeName<string> | TypeName<(() => void)>
+// 3. 最后分发为"string" | "function"
+
+// 抽象过程
+// ( A | B | C ) extends T ? X : Y
+// (A extends T ? X : Y) | (B extends T ? X : Y) | (B extends T ? X : Y)
+// 使用[]包裹后，不会进行额外的分发逻辑。
+// [A | B | C] extends [T] ? X : Y
+
 // naked type 裸类型 单纯是T -> 条件类型会在实例化时期自动分发到联合类型上
+
 type Naked<T> = T extends boolean ? 'Y' : 'N';
 type Wrapped<T> = [T] extends [boolean] ? 'Y' : 'N';
 // type A = Wrapped<false> // 不分发 -》'Y'
@@ -127,9 +138,11 @@ type Wrapped<T> = [T] extends [boolean] ? 'Y' : 'N';
 type Distributed = Naked<string | boolean>; // 'N' | 'Y'
 type NotDistributed = Wrapped<number | boolean>; // 'N'
 
-/** ====================================  Exclude  =========================**/
-// type Exclude<T, U> = T extends U ? never : T
-// type TWorker = 'a' | 'b' | 'c';
+// 内置类型
+/** ====================================  Exclude 排除 =========================**/
+
+// 基础demo
+type MyExclude = Exclude<string | number | boolean, boolean>; // string | number
 interface Worker {
   name: string;
   age: number;
@@ -144,12 +157,14 @@ interface Student {
 }
 // keyof Worker = 'name' | 'age' | 'email' | 'salary'
 type TWorker = keyof Worker;
-// let a: TWorker = 'age';
+let a: TWorker = 'age';
 type ER = Exclude<'a' | 'b' | 'c' | 'd', 'a' | 'b' | 'c'>; // -> d
 type R5 = Exclude<'age' | 'email' | 'name' | 'xx', keyof Worker>; // ->'xx'
 
 // 获取 Worker 接口类型中存在的属性，在student中不存在的属性
 type TResult = Exclude<keyof Worker, keyof Student>; // salary
+
+// type Exclude<T, U> = T extends U ? never : T
 
 /** ====================================  Extract  =========================**/
 /**
@@ -160,6 +175,9 @@ type TResult = Exclude<keyof Worker, keyof Student>; // salary
    2. 在联合类型中的使用 
    3. 函数约束
    */
+
+type MyExtract = Extract<string | number | boolean, boolean>; // boolean
+
 class Person {
   name!: string;
 }
@@ -198,16 +216,16 @@ type ExtractType1 = Extract<fun1, fun2>; // never
 type ExtractType2 = Extract<fun2, fun1>; // (one: number) => string
 
 /** ====================================  NonNullable  =========================**/
+
 // type NonNullable<T> = T extends null | undefined ? never : T;
+
 type CommonType = 'a' | null | undefined;
 type R7 = NonNullable<CommonType>; // -> a
 
 /** ====================================  ReturnType 获取函数的返回类型 =========================**/
-// 定义：infer表示在extends条件语句中以占位符来出现用来 修饰数据类型的关键字(守卫后面的数据类型的)，被修饰的关键字要等到使用时才能被推断出来
+// 定义：infer表示在extends条件语句中以占位符来出现，用来修饰数据类型的关键字(守卫后面的数据类型的)，被修饰的关键字要等到使用时才能被推断出来
 // 占位符R出现位置 1. 函数类型的参数类型位置上 2. 函数返回值 3. 会出现在类型的泛型具体化上
 // infer 推断的意思  相当于声明一个变量 R-表示返回值类型 ,infer R -> 取出返回值类型 R 不用声名，占位符一样 infer写在哪里就推导哪里的类型
-// type ReturnType<T extends (...args: any) => any> = T extends (...args: any) => infer R ? R : any;
-type R8 = ReturnType<any>;
 
 function getUser(name: string, age: number) {
   return { name: 'zl', age: 20 };
@@ -219,38 +237,56 @@ let r: ReturnUserType = {
   name: 'z',
   age: 18,
 };
+type ReturnType<T extends (...args: any) => any> = T extends (
+  ...args: any
+) => infer R
+  ? R
+  : any;
 
 /** =========  Parameters 获取函数参数类型  P-> [string, number] 出入的类型需要是一个函数，infer推导参数 将参数类型推导出来，塞到变量P中，返回P ====**/
-// type Parameters<T extends (...args: any) => any> = T extends (...args: infer P) => any ? P : never;
-type ParamType = Parameters<GetUserType>;
-let params: ParamType; // params-> [name: string, age: number]
 
-/** ================  ConstructorParameters 获取构造函数参数类型 =========================**/
+type ParamType = Parameters<GetUserType>; //
+let params: ParamType; // params-> [name: string, age: number]
+// 1. P-> [string, number] 出入的类型需要是一个函数
+// 2. infer推导参数 将参数类型推导出来，塞到变量P中，返回P
+type Parameters<T extends (...args: any) => any> = T extends (
+  ...args: infer P
+) => any
+  ? P
+  : never;
+
+/** ================  ConstructorParameters 获取类的构造函数参数类型 =========================**/
 // 类的双重性质 1.代表构造函数对象变量  2.代表类型
+
 class Animal {
   constructor(public name: string) {
     this.name = name;
   }
-
   getName() {
     console.log(this.name);
   }
 }
-
-// 获取构造函数参数的类型 - 获取到Animal构造函数参数类型，放到一个元祖中 [name: string]
-// type ConstructorParameters<T extends new (...args: any) => any> = T extends new (...args: infer P) => any ? P : never;
+// 获取类的构造函数参数类型 - 获取到Animal构造函数参数类型，放到一个元祖中 [name: string]
 type Params = ConstructorParameters<typeof Animal>;
+type ConstructorParameters<T extends new (...args: any) => any> =
+  T extends new (...args: infer P) => any ? P : never;
 
-// type InstanceType<T extends new (...args: any) => any> = T extends new (...args: any) => infer R ? R : any;
+/** ================  InstanceType 获取构造函数实例类型 =========================**/
+
 type PersonInstance = InstanceType<typeof Animal>;
 let instance: PersonInstance = {
   name: 'zl',
   getName() {},
 };
+type InstanceType<T extends new (...args: any) => any> = T extends new (
+  ...args: any
+) => infer R
+  ? R
+  : any;
 
 /**
  * infer 应用
- * 元组转 联合
+ * 元组 转 联合
  * E 代表元素的类型 2种类型 不写infer 就是any了 声明在哪里就指向什么类型
  * infer 可以用在任何位置 比如 参数 返回值 函数 等
  * eg:
@@ -258,9 +294,23 @@ let instance: PersonInstance = {
  * type KK = ExpInfer<{ name: string }>  // kk -> string
  */
 
-type ElementOf<T> = T extends Array<infer E> ? E : never;
+type ExpInfer<T> = T extends { name: infer X } ? X : never
+type KK = ExpInfer<{ name: string }>  // kk -> string
+
+
+
+
+// 元组 转 联合 -> [string,number] => string | number
 type ITuple = [string, number];
+// E 代表元素的类型
+type ElementOf<T> = T extends Array<infer E> ? E : never;
+
 type TupleToUnion = ElementOf<ITuple>; // string | number
+
+function tupleToUnion(payload: TupleToUnion) {}
+
+
+tupleToUnion()
 
 /**
  * 如何将 联合类型转化为交叉类型  string | number -> string & number

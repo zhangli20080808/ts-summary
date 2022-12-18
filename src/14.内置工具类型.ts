@@ -17,7 +17,7 @@
 
 type T1 = keyof any; // string | number | symbol
 
-/** ====================================  Partial 必选变成非可选  =========================**/
+/** ====================================  Partial 可以将传入的属性由 非可选变为可选 =========================**/
 
 /**
 *  很好理解 批量定义
@@ -25,75 +25,102 @@ type T1 = keyof any; // string | number | symbol
 *  2. 迭代T中的所有T 通过 P in keyof T
     T[P] -> 获取值得类型
 * 
-*  type Partial<T> = {
+ type Partial<T> = {
         [P in keyof T]?: T[P]; 
-    };
+  };
 
     3. Teacher -> 范型中keyof的使用，具体看demo19
     场景：类中有一个对象，根据index或者key值获取对象中的某一项内容的时候，又想正确的推断出返回内容的类型的时候，可以使用 Teacher 这种模式
     4. in keyof T 和 extends keyof T 的区别
     [P in keyof T] -> 精确匹配  && <T, K extends keyof T> -> 包含了里面的属性值就可以，多了无所谓
 */
+
+
+// type Partial<T> = {
+//   [P in keyof T]?: T[P];
+// };
+
 interface IPerson {
   name: string;
   age: number;
   gender: string;
 }
+// 类中有一个对象，根据index或者key值获取对象中的某一项内容的时候，又想正确的推断出返回内容的类型的时候，可以使用 Teacher 这种模式
 class Teacher {
   constructor(private info: IPerson) {}
-
+  // 普通思维
   // getInfo1(key: string) {
   //   if (key === 'name' || key === 'age' || key === 'gender') {
   //     return this.info[key]
   //   }
   // }
+  //  [type T = 'name' ,key:'name',Person['name']]
+  //  [type T = 'age' ,key:'age',Person['age']]
+  //  [type T = 'gender' ,key:'gender',Person['gender']]
 
-  //  [type T = 'name' ,key:'name',Person['name']]  [type T = 'age' ,key:'age',Person['age']]  [type T = 'gender' ,key:'gender',Person['gender']]
-  // T extends 'name'  等价于  type T = 'name'
+  // T extends 'name'  等价于  type T = 'name' ，约束可以简单这里理解
   getInfo<T extends keyof IPerson>(key: T): IPerson[T] {
     return this.info[key];
   }
 }
-
 const teacher = new Teacher({
   name: 'zl',
   age: 18,
   gender: 'male',
 });
-const test = teacher.getInfo('name');
-// const test2 = teacher.getInfo1('names') // 自动推断出三种类型，最终返回字符串，可以手动 as ,不是最优解->string | number | undefined
+// const test = teacher.getInfo('');
+
+
+
+
+// const test2 = teacher.getInfo1('name') // 自动推断出三种类型，最终返回字符串，可以手动 as ,不是最优解->string | number | undefined
 
 type A = Partial<IPerson>;
+
+
+
+
+
+
 const a: A = {
   name: '123',
   age: 1,
-  gender: 'male',
+  // gender: 'male',  
 };
 
 // 不过需要考虑嵌套的情况
+// 递归变成可选项 取到的值如果还是对象 进行递归操作
+
+
 interface Company {
   name: string;
   id: number;
 }
-
 interface Person {
   name: string;
   id: number;
   company: Company;
 }
-
-// 递归变成可选项 取到的值如果还是对象 进行递归操作
-type DeepPartial<T> = {
-  [U in keyof T]?: T[U] extends object ? DeepPartial<T[U]> : T[U];
-};
-
-type PersonPartial = DeepPartial<Person>;
+type PersonBasePartial = Partial<Person>;
+// 如果传了 company 但是 company 没有传id 和 name 会报错
 // 如果传了 company 但是 company 没有传id 和 name 会报错 不过也可以处理 实现DeepPartial 将每个属性变成可选类型
 
-let p: PersonPartial = {
+let demo1: PersonBasePartial = {
   name: 'zl',
   id: 12,
   company: {},
+};
+
+// 上述情况可以自定义处理， 实现DeepPartial 将每个属性变成可选类型
+type DeepPartial<T> = {
+  [U in keyof T]?: T[U] extends object ? DeepPartial<T[U]> : T[U];
+};
+type PersonPartial = DeepPartial<Person>;
+let p: PersonPartial = {
+  name: 'zl',
+  id: 12,
+  company: {
+  },
 };
 
 /** ====================================  Required - 把可选项变成必选项 =========================**/
@@ -338,7 +365,7 @@ let objTest: object = {};
 objTest.then = 'fd';
 
 let objTest2: Record<any, any> = {};
-objTest2.then = '123'
+objTest2.then = '123';
 /**
  Record和Map的区别
  实际开发在显示数据时候，数据扁平化我们采用 Record，主要是正好符合 Record的特性

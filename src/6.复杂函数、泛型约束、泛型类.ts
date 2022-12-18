@@ -129,14 +129,18 @@ let str4: T3 = { name: '11' };
 const getVal = <T extends Object, K extends keyof T>(obj: T, key: K) => {
   return obj[key];
 };
-getVal({ a: 1, b: 2 }, 'a');
+getVal({ a: 1, b: 2, c: 3 }, '');
+
+
 
 // 取任意类型的key
 type T11 = keyof any; // string | number | symbol
 // 取当前对象的所有的key属性
 type T22 = keyof (string | number); // "toString" | "valueOf"
-
 type T33 = keyof string;
+
+
+
 
 // 泛型类 类中使用泛型
 // 注意 泛型类指的是我们实例部分的类型  类的静态属性是不能使用的
@@ -182,8 +186,6 @@ const testOne = (outerClass: ClassWidthConstructor) => {
   return new outerClass('new');
 };
 
-
-
 class TestOne {
   name: string;
   constructor(str: string) {
@@ -196,8 +198,6 @@ interface DateType {
   new (): Date;
   (dataString: string): string;
 }
-
-
 
 // 函数泛型
 // 函数重载
